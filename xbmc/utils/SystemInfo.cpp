@@ -1235,7 +1235,7 @@ std::string CSysInfo::GetVersionShort()
 std::string CSysInfo::GetVersion()
 {
   return GetVersionShort() + " (" + CCompileInfo::GetVersionCode() + ")" +
-         " Git:" + CCompileInfo::GetSCMID();
+         " | " + CCompileInfo::GetSCMID();
 }
 
 std::string CSysInfo::GetVersionCode()
