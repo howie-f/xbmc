@@ -62,6 +62,11 @@ class CGUIPassword : public ISettingCallback
 public:
   CGUIPassword(void);
   virtual ~CGUIPassword(void);
+  template <typename T>
+  bool IsItemUnlocked(T pItem,
+                      const std::string& strType,
+                      const std::string& strLabel,
+                      const std::string& strHeading);
   bool IsItemUnlocked(CFileItem* pItem, const std::string &strType);
   bool IsItemUnlocked(CMediaSource* pItem, const std::string &strType);
   bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading);
