@@ -38,6 +38,7 @@
 #include "view/ViewStateSettings.h"
 #include "utils/Variant.h"
 #include "media/MediaLockState.h"
+#include "utils/log.h"
 
 #include <utility>
 
@@ -506,6 +507,32 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES
       return true;
 
   return false;
+}
+
+bool CGUIPassword::IsMediaPathUnlocked(const std::string& strPath, const std::string& strType)
+{
+  if (StringUtils::StartsWithNoCase(strPath, "root") ||
+      StringUtils::StartsWithNoCase(strPath, "library://"))
+  {
+    // if we're entering from library or root we won't lookup mediasources
+    CLog::Log(LOGDEBUG, "CGUIPassword::IsMediaPathUnlocked - entering from {}", strPath);
+    return true;
+  }
+
+  if (g_passwordManager.bMasterUser || CProfilesManager::GetInstance().GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
+    return true;
+
+  VECSOURCES& vecSources = *CMediaSourceSettings::GetInstance().GetSources(strType);
+  bool bName = false;
+  int iIndex = CUtil::GetMatchingSource(strPath, vecSources, bName);
+  if (iIndex > -1 && iIndex < static_cast<int>(vecSources.size()))
+    return g_passwordManager.IsItemUnlocked(&vecSources[iIndex], strType);
+
+  // we should never get here, but if we do so a filter is missing above (root, library://...)
+  CLog::Log(LOGERROR,
+              "CGUIPassword::IsMediaPathUnlocked - maintenance needed: filter {}",
+              strPath);
+  return true;
 }
 
 void CGUIPassword::OnSettingAction(const CSetting *setting)

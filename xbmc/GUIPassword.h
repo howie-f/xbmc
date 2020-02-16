@@ -91,6 +91,7 @@ public:
   void LockSources(bool lock);
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources);
+  bool IsMediaPathUnlocked(const std::string& strPath, const std::string& strType);
 
   virtual void OnSettingAction(const CSetting *setting) override;
 
