@@ -65,11 +65,7 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
     std::string strLabel = pItem->GetLabel();
     int iResult = 0;  // init to user succeeded state, doing this to optimize switch statement below
     char buffer[33]; // holds 32 places plus sign character
-    if(g_passwordManager.bMasterUser)// Check if we are the MasterUser!
-    {
-      iResult = 0;
-    }
-    else
+    if(!g_passwordManager.bMasterUser)// Check if we are the MasterUser!
     {
       if (0 != CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES) && pItem->m_iBadPwdCount >= CSettings::GetInstance().GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES))
       { // user previously exhausted all retries, show access denied error
