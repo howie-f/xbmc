@@ -416,9 +416,13 @@ bool CGUIPassword::CheckMenuLock(int iWindowID)
       break;
     case WINDOW_MUSIC_NAV:      // Music
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().musicLocked();
+      if (!bCheckPW && strMediasourcePath != "") // check mediasource by path
+        return g_passwordManager.IsMediaPathUnlocked(strMediasourcePath, "music");
       break;
     case WINDOW_VIDEO_NAV:      // Video
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().videoLocked();
+      if (!bCheckPW && strMediasourcePath != "") // check mediasource by path
+        return g_passwordManager.IsMediaPathUnlocked(strMediasourcePath, "video");
       break;
     case WINDOW_PICTURES:       // Pictures
       bCheckPW = CProfilesManager::GetInstance().GetCurrentProfile().picturesLocked();
