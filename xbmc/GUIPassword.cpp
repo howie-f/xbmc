@@ -117,10 +117,6 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
 
 bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
 {
-  // \brief Tests if the user is allowed to access the share folder
-  // \param pItem The share folder item to access
-  // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
-  // \return If access is granted, returns \e true
   std::string strLabel = pItem->GetLabel();
   std::string strHeading;
   if (pItem->m_bIsFolder)
@@ -133,10 +129,6 @@ bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string &strType)
 
 bool CGUIPassword::IsItemUnlocked(CMediaSource* pItem, const std::string &strType)
 {
-  // \brief Tests if the user is allowed to access the Mediasource
-  // \param pItem The share folder item to access
-  // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
-  // \return If access is granted, returns \e true
   std::string strLabel = pItem->strName;
   std::string strHeading = g_localizeStrings.Get(12325);
 

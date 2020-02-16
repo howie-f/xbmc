@@ -67,7 +67,15 @@ public:
                       const std::string& strType,
                       const std::string& strLabel,
                       const std::string& strHeading);
+  // \brief Tests if the user is allowed to access the share folder
+  // \param pItem The share folder item to access
+  // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
+  // \return If access is granted, returns \e true
   bool IsItemUnlocked(CFileItem* pItem, const std::string &strType);
+  // \brief Tests if the user is allowed to access the Mediasource
+  // \param pItem The share folder item to access
+  // \param strType The type of share being accessed, e.g. "music", "video", etc. See CSettings::UpdateSources()
+  // \return If access is granted, returns \e true
   bool IsItemUnlocked(CMediaSource* pItem, const std::string &strType);
   bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading);
   bool CheckLock(LockType btnType, const std::string& strPassword, int iHeading, bool& bCanceled);
