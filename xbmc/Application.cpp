@@ -3236,6 +3236,16 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
 
   if (!bRestart)
   {
+    if (item.IsVideo())
+    {
+      if (g_windowManager.GetActiveWindow() != WINDOW_VIDEO_NAV &&
+        CProfilesManager::GetInstance().GetCurrentProfile().videoLocked() &&
+        !g_passwordManager.IsMasterLockUnlocked(true))
+      return PLAYBACK_CANCELED;
+
+      CUtil::ClearSubtitles();
+    }
+
     SaveFileState(true);
 
     // Switch to default options
@@ -3250,9 +3260,6 @@ PlayBackRet CApplication::PlayFile(CFileItem item, const std::string& player, bo
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
-
-    if (item.IsVideo())
-      CUtil::ClearSubtitles();
   }
 
   if (item.IsDiscStub())
