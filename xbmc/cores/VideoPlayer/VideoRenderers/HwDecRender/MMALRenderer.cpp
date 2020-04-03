@@ -247,6 +247,8 @@ void CMMALPool::Prime()
   if (!m_mmal_pool || !m_component)
     return;
   MMAL_PORT_T *port = m_input ? m_component->input[0] : m_component->output[0];
+  if (!port->is_enabled)
+    return;
   while (omvb = GetBuffer(0), omvb)
   {
     if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
@@ -411,6 +413,7 @@ CMMALRenderer::CMMALRenderer() : CThread("MMALRenderer"), m_processThread(this, 
   m_frameInterval = 0.0;
   m_frameIntervalDiff = 1e5;
   m_vsync_count = ~0U;
+  m_sharpness = -2.0f;
   m_vout_width = 0;
   m_vout_height = 0;
   m_vout_aligned_width = 0;
@@ -525,7 +528,6 @@ void CMMALRenderer::Run()
   CLog::Log(LOGDEBUG, "%s::%s - starting", CLASSNAME, __func__);
   while (1)
   {
-    bool prime = false;
     MMAL_BUFFER_HEADER_T *buffer = mmal_queue_wait(m_queue_process);
     assert(buffer);
     if (buffer == &m_quitpacket)
@@ -554,8 +556,8 @@ void CMMALRenderer::Run()
         if (interlace_method == VS_INTERLACEMETHOD_AUTO)
         {
           interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
-          // avoid advanced deinterlace when using software decode and HD resolution
-          if (omvb->m_state == MMALStateFFDec && omvb->m_width * omvb->m_height > 720*576)
+          // avoid advanced deinterlace when using HD resolution
+          if (omvb->m_width * omvb->m_height > 720*576)
             interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
         }
         bool interlace = (omvb->mmal_buffer->flags & MMAL_BUFFER_HEADER_VIDEO_FLAG_INTERLACED) ? true:false;
@@ -656,10 +658,6 @@ void CMMALRenderer::Run()
           }
         }
       }
-      else
-      {
-        prime = true;
-      }
       break;
     }
     default: assert(0); break;
@@ -678,8 +676,6 @@ void CMMALRenderer::Run()
         mmal_buffer_header_release(buffer);
       }
     }
-    if (prime && m_deint_output_pool)
-     m_deint_output_pool->Prime();
   }
   CLog::Log(LOGDEBUG, "%s::%s - stopping", CLASSNAME, __func__);
 }
@@ -845,6 +841,15 @@ void CMMALRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
       CLog::Log(LOGDEBUG, "%s::%s - MMAL: clear:%d flags:%x alpha:%d source:%d omvb:%p mmal:%p mflags:%x skipping", CLASSNAME, __func__, clear, flags, alpha, source, omvb, omvb->mmal_buffer, omvb->mmal_buffer->flags);
     SetVideoRect(m_cachedSourceRect, m_cachedDestRect);
     goto exit;
+  }
+
+  // if sharpness setting has changed, we should update it
+  if (m_sharpness != CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness)
+  {
+    m_sharpness = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_Sharpness;
+    char command[80], response[80];
+    sprintf(command, "scaling_sharpness %d", ((int)(50.0f * (m_sharpness + 1.0f) + 0.5f)));
+    vc_gencmd(response, sizeof response, command);
   }
 
   if (m_format != RENDER_FMT_MMAL)
@@ -1023,7 +1028,8 @@ bool CMMALRenderer::Supports(ERENDERFEATURE feature)
       feature == RENDERFEATURE_ZOOM            ||
       feature == RENDERFEATURE_ROTATION        ||
       feature == RENDERFEATURE_VERTICAL_SHIFT  ||
-      feature == RENDERFEATURE_PIXEL_RATIO)
+      feature == RENDERFEATURE_PIXEL_RATIO     ||
+      feature == RENDERFEATURE_SHARPNESS)
     return true;
 
   return false;
@@ -1359,7 +1365,7 @@ bool CMMALRenderer::CheckConfigurationDeint(uint32_t width, uint32_t height, uin
     m_deint_output->format->es->video.crop.height = height;
     m_deint_output->format->es->video.width = ALIGN_UP(width, 32);
     m_deint_output->format->es->video.height = ALIGN_UP(height, 16);
-    m_deint_output->format->encoding = advanced_deinterlace ? MMAL_ENCODING_YUVUV128 : MMAL_ENCODING_I420;
+    m_deint_output->format->encoding = advanced_deinterlace && encoding == MMAL_ENCODING_OPAQUE ? MMAL_ENCODING_YUVUV128 : MMAL_ENCODING_I420;
 
     status = mmal_port_format_commit(m_deint_output);
     if (status != MMAL_SUCCESS)

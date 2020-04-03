@@ -8694,7 +8694,7 @@ msgstr ""
 
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
 msgctxt "#16313"
-msgid "VDPAU - Sharpness"
+msgid "Sharpness"
 msgstr ""
 
 #empty string with id 16314
@@ -12451,7 +12451,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#20433"
-msgid "Extract thumbnails and video information"
+msgid "Extract video information from files"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
@@ -17028,7 +17028,7 @@ msgstr ""
 #. Description of setting with label #20433 "Extract thumbnails and video information"
 #: system/settings/settings.xml
 msgctxt "#36178"
-msgid "Extract thumbnails and metadata information such as codec and aspect ratio from videos."
+msgid "Extract metadata information such as codec and aspect ratio from videos."
 msgstr ""
 
 #. Description of setting with label #20419 "Replace file names with library titles"
@@ -17040,7 +17040,7 @@ msgstr ""
 #. Description of setting with label #20433 "Extract thumbnails and video information"
 #: system/settings/settings.xml
 msgctxt "#36180"
-msgid "Extract thumbnails and information, such as codecs and aspect ratio, to display in library mode."
+msgid "Extract thumbnails, to display in library Mode."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19430,6 +19430,15 @@ msgstr ""
 #: system/settings/rbp.xml
 msgctxt "#38010"
 msgid "GPU accelerated"
+
+#: system/settings/settings.xml
+msgctxt "#38040"
+msgid "Support browsing into archives"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38041"
+msgid "Allow viewing and playing files in archives (e.g. zip, rar)"
 msgstr ""
 
 #. Setting #38011 "Show All Items entry"
@@ -19641,6 +19650,21 @@ msgstr ""
 
 #empty strings from id 38062 to 38099
 
+#: system/settings/settings.xml
+msgctxt "#38007"
+msgid "Boost centre channel when downmixing"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38008"
+msgid "Increase this value to make the dialogue louder compared to background sounds when downmixing multichannel audio"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#38009"
+msgid "%i dB"
+msgstr ""
+
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
 msgctxt "#38100"
@@ -19786,4 +19810,55 @@ msgstr ""
 #: view/GUIViewState.cpp
 msgctxt "#39010"
 msgid "Select sort method"
+msgstr ""
+
+#: system/peripherals.xml
+msgctxt "#38050"
+msgid "Remote button press delay before repeating (ms)"
+msgstr ""
+
+#: system/peripherals.xml
+msgctxt "#38051"
+msgid "Remote button press repeat rate (ms)"
+msgstr ""
+
+#: system/peripherals.xml
+msgctxt "#38052"
+msgid "Remote button press release time (ms)"
+msgstr ""
+
+msgctxt "#38190"
+msgid "Extract thumbnails from video files"
+msgstr ""
+
+#. Description of setting "System -> Audio Ouput -> A/V sync method" with label #38200
+#: system/settings/settings.xml
+msgctxt "#38200"
+msgid "PLL adjustment to maintain audio/video sync"
+msgstr ""
+
+#. Description of setting "Videos -> Playback -> A/V sync method" with label #38201
+#: system/settings/settings.xml
+msgctxt "#38201"
+msgid "Allows sync adjustment without resampling. Lower the settings if you get audio/video dropouts."
+msgstr ""
+
+msgctxt "#38202"
+msgid "Off"
+msgstr ""
+
+msgctxt "#38203"
+msgid "Low"
+msgstr ""
+
+msgctxt "#38204"
+msgid "Medium"
+msgstr ""
+
+msgctxt "#38205"
+msgid "High"
+msgstr ""
+
+msgctxt "#38206"
+msgid "Max"
 msgstr ""

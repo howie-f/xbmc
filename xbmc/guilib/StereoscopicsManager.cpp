@@ -70,8 +70,13 @@ static const struct StereoModeMap VideoModeToGuiModeMap[] =
   { "anaglyph_cyan_red",        RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN },
   { "anaglyph_green_magenta",   RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA },
   { "anaglyph_yellow_blue",     RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE },
-  { "block_lr",                 RENDER_STEREO_MODE_OFF }, // unsupported
-  { "block_rl",                 RENDER_STEREO_MODE_OFF }, // unsupported
+#ifndef TARGET_RASPBERRY_PI
+  { "block_lr",                 RENDER_STEREO_MODE_HARDWAREBASED },
+  { "block_rl",                 RENDER_STEREO_MODE_HARDWAREBASED },
+#else
+  { "block_lr",                 RENDER_STEREO_MODE_SPLIT_HORIZONTAL }, // fallback
+  { "block_rl",                 RENDER_STEREO_MODE_SPLIT_HORIZONTAL }, // fallback
+#endif
   {}
 };
 
@@ -197,6 +202,15 @@ std::string CStereoscopicsManager::DetectStereoModeByString(const std::string &n
   if (re.RegFind(searchString) > -1)
     stereoMode = "top_bottom";
 
+  if (!re.RegComp(g_advancedSettings.m_stereoscopicregex_mvc.c_str()))
+  {
+    CLog::Log(LOGERROR, "%s: Invalid RegExp for matching 3d MVC content:'%s'", __FUNCTION__, g_advancedSettings.m_stereoscopicregex_mvc.c_str());
+    return stereoMode;
+  }
+
+  if (re.RegFind(searchString) > -1)
+    stereoMode = "left_right";
+
   return stereoMode;
 }
 
@@ -301,7 +315,7 @@ int CStereoscopicsManager::ConvertVideoToGuiStereoMode(const std::string &mode)
   size_t i = 0;
   while (VideoModeToGuiModeMap[i].name)
   {
-    if (mode == VideoModeToGuiModeMap[i].name)
+    if (mode == VideoModeToGuiModeMap[i].name && g_Windowing.SupportsStereo(VideoModeToGuiModeMap[i].mode))
       return VideoModeToGuiModeMap[i].mode;
     i++;
   }

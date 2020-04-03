@@ -55,7 +55,6 @@ protected:
   bool                      m_stalled;
   IDVDStreamPlayer::ESyncState m_syncState;
   bool                      m_flush;
-  std::string               m_codecname;
   std::atomic_bool          m_bAbortOutput;
   double                    m_iSubtitleDelay;
   bool                      m_bRenderSubs;
@@ -97,6 +96,7 @@ public:
   void WaitForBuffers()                             { m_messageQueue.WaitUntilEmpty(); }
   int  GetLevel() const                             { return m_messageQueue.GetLevel(); }
   bool IsStalled() const                            { return m_stalled;  }
+  bool SupportsExtention() const;
   bool IsEOS();
   void CloseStream(bool bWaitForBuffers);
   void Output(double pts, bool bDropPacket);

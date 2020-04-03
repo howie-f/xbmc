@@ -23,9 +23,11 @@
 
 #include <assert.h>
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
 #include "cores/omxplayer/OMXImage.h"
+#include <interface/mmal/mmal.h>
 
 #include <sys/ioctl.h>
 #include "rpi/rpi_user_vcsm.h"
@@ -38,6 +40,41 @@
 static int mbox_open();
 static void mbox_close(int file_desc);
 
+typedef struct vc_image_extra_uv_s {
+   void *u, *v;
+   int vpitch;
+} VC_IMAGE_EXTRA_UV_T;
+
+typedef union {
+   VC_IMAGE_EXTRA_UV_T uv;
+} VC_IMAGE_EXTRA_T;
+
+struct VC_IMAGE_T {
+   unsigned short                  type;           /* should restrict to 16 bits */
+   unsigned short                  info;           /* format-specific info; zero for VC02 behaviour */
+   unsigned short                  width;          /* width in pixels */
+   unsigned short                  height;         /* height in pixels */
+   int                             pitch;          /* pitch of image_data array in bytes */
+   int                             size;           /* number of bytes available in image_data array */
+   void                           *image_data;     /* pixel data */
+   VC_IMAGE_EXTRA_T                extra;          /* extra data like palette pointer */
+   void                           *metadata;       /* metadata header for the image */
+   void                           *pool_object;    /* nonNULL if image was allocated from a vc_pool */
+   uint32_t                        mem_handle;     /* the mem handle for relocatable memory storage */
+   int                             metadata_size;  /* size of metadata of each channel in bytes */
+   int                             channel_offset; /* offset of consecutive channels in bytes */
+   uint32_t                        video_timestamp;/* 90000 Hz RTP times domain - derived from audio timestamp */
+   uint8_t                         num_channels;   /* number of channels (2 for stereo) */
+   uint8_t                         current_channel;/* the channel this header is currently pointing to */
+   uint8_t                         linked_multichann_flag;/* Indicate the header has the linked-multichannel structure*/
+   uint8_t                         is_channel_linked;     /* Track if the above structure is been used to link the header
+                                                             into a linked-mulitchannel image */
+   uint8_t                         channel_index;         /* index of the channel this header represents while
+                                                             it is being linked. */
+   uint8_t                         _dummy[3];      /* pad struct to 64 bytes */
+};
+typedef int vc_image_t_size_check[(sizeof(VC_IMAGE_T) == 64) * 2 - 1];
+
 CRBP::CRBP()
 {
   m_initialized     = false;
@@ -45,6 +82,8 @@ CRBP::CRBP()
   m_DllBcmHost      = new DllBcmHost();
   m_OMX             = new COMXCore();
   m_display = DISPMANX_NO_HANDLE;
+  m_requested_pll_adjust = -1.0;
+  m_actual_pll_adjust = -1.0;
   m_mb = mbox_open();
   vcsm_init();
   m_vsync_count = 0;
@@ -56,6 +95,14 @@ CRBP::~CRBP()
   Deinitialize();
   delete m_OMX;
   delete m_DllBcmHost;
+}
+
+void CRBP::InitializeSettings()
+{
+  if (m_initialized && g_advancedSettings.m_cacheMemSize == ~0U)
+    g_advancedSettings.m_cacheMemSize = m_arm_mem < 256 ? 1024 * 1024 * 2 : 1024 * 1024 * 20;
+  if (m_initialized && g_advancedSettings.m_libAssCache == ~0U)
+    g_advancedSettings.m_libAssCache = m_arm_mem < 256 ? 21 : m_arm_mem < 512 ? 42 : 96;
 }
 
 bool CRBP::Initialize()
@@ -97,6 +144,8 @@ bool CRBP::Initialize()
   if (!m_gui_resolution_limit)
     m_gui_resolution_limit = m_gpu_mem < 128 ? 720:1080;
 
+  InitializeSettings();
+
   g_OMXImage.Initialize();
   m_omx_image_init = true;
   return true;
@@ -109,6 +158,7 @@ void CRBP::LogFirmwareVerison()
   response[sizeof(response) - 1] = '\0';
   CLog::Log(LOGNOTICE, "Raspberry PI firmware version: %s", response);
   CLog::Log(LOGNOTICE, "ARM mem: %dMB GPU mem: %dMB MPG2:%d WVC1:%d", m_arm_mem, m_gpu_mem, m_codec_mpg2_enabled, m_codec_wvc1_enabled);
+  CLog::Log(LOGNOTICE, "cache.memorysize: %dMB libass.cache: %dMB",  g_advancedSettings.m_cacheMemSize >> 20, g_advancedSettings.m_libAssCache);
   m_DllBcmHost->vc_gencmd(response, sizeof response, "get_config int");
   response[sizeof(response) - 1] = '\0';
   CLog::Log(LOGNOTICE, "Config:\n%s", response);
@@ -143,6 +193,8 @@ void CRBP::CloseDisplay(DISPMANX_DISPLAY_HANDLE_T display)
   assert(s == 0);
   vc_dispmanx_display_close(m_display);
   m_display = DISPMANX_NO_HANDLE;
+  m_requested_pll_adjust = -1.0;
+  m_actual_pll_adjust = -1.0;
 }
 
 void CRBP::GetDisplaySize(int &width, int &height)
@@ -306,7 +358,7 @@ static unsigned mem_lock(int file_desc, unsigned handle)
    return p[5];
 }
 
-unsigned mem_unlock(int file_desc, unsigned handle)
+static unsigned mem_unlock(int file_desc, unsigned handle)
 {
    int i=0;
    unsigned p[32];
@@ -325,10 +377,36 @@ unsigned mem_unlock(int file_desc, unsigned handle)
    return p[5];
 }
 
+
+#define GET_VCIMAGE_PARAMS 0x30044
+static int get_image_params(int file_desc, VC_IMAGE_T * img)
+{
+    uint32_t buf[sizeof(*img) / sizeof(uint32_t) + 32];
+    uint32_t * p = buf;
+    void * rimg;
+    int rv;
+
+    *p++ = 0; // size
+    *p++ = 0; // process request
+    *p++ = GET_VCIMAGE_PARAMS;
+    *p++ = sizeof(*img);
+    *p++ = sizeof(*img);
+    rimg = p;
+    memcpy(p, img, sizeof(*img));
+    p += sizeof(*img) / sizeof(*p);
+    *p++ = 0;  // End tag
+    buf[0] = (p - buf) * sizeof(*p);
+
+    rv = mbox_property(file_desc, buf);
+    memcpy(img, rimg, sizeof(*img));
+
+    return rv;
+}
+
 CGPUMEM::CGPUMEM(unsigned int numbytes, bool cached)
 {
   m_numbytes = numbytes;
-  m_vcsm_handle = vcsm_malloc_cache(numbytes, cached ? VCSM_CACHE_TYPE_HOST : VCSM_CACHE_TYPE_NONE, (char *)"CGPUMEM");
+  m_vcsm_handle = vcsm_malloc_cache(numbytes, (VCSM_CACHE_TYPE_T)(0x80 | (unsigned)(cached ? VCSM_CACHE_TYPE_HOST : VCSM_CACHE_TYPE_NONE)), (char *)"CGPUMEM");
   assert(m_vcsm_handle);
   m_vc_handle = vcsm_vc_hdl_from_hdl(m_vcsm_handle);
   assert(m_vc_handle);
@@ -354,6 +432,55 @@ void CGPUMEM::Flush()
   iocache.s[0].addr = (int) m_arm;
   iocache.s[0].size  = m_numbytes;
   vcsm_clean_invalid( &iocache );
+}
+
+AVRpiZcFrameGeometry CRBP::GetFrameGeometry(uint32_t encoding, unsigned short video_width, unsigned short video_height)
+{
+  AVRpiZcFrameGeometry geo = {};
+  struct VC_IMAGE_T img = {};
+
+  if (encoding == MMAL_ENCODING_YUVUV128)
+  {
+    img.type = VC_IMAGE_YUV_UV;
+    img.width = video_width;
+    img.height = video_height;
+    int rc = get_image_params(GetMBox(), &img);
+    assert(rc == 0);
+    const unsigned int stripe_w = 128;
+    geo.stride_y = stripe_w;
+    geo.stride_c = stripe_w;
+    geo.height_y = ((intptr_t)img.extra.uv.u - (intptr_t)img.image_data) / stripe_w;
+    geo.height_c = img.pitch / stripe_w - geo.height_y;
+    geo.planes_c = 1;
+    geo.stripes = (video_width + stripe_w - 1) / stripe_w;
+  }
+  else if (encoding == MMAL_ENCODING_I420)
+  {
+    geo.stride_y = (video_width + 31) & ~31;
+    geo.stride_c = geo.stride_y / 2;
+    geo.height_y = (video_height + 15) & ~15;
+    geo.height_c = geo.height_y / 2;
+    geo.planes_c = 2;
+    geo.stripes = 1;
+  }
+  else assert(0);
+  return geo;
+}
+
+double CRBP::AdjustHDMIClock(double adjust)
+{
+  char response[80];
+
+  if (adjust == m_requested_pll_adjust)
+    return m_actual_pll_adjust;
+
+  m_requested_pll_adjust = adjust;
+  vc_gencmd(response, sizeof response, "hdmi_adjust_clock %f", adjust);
+  char *p = strchr(response, '=');
+  if (p)
+    m_actual_pll_adjust = atof(p+1);
+  CLog::Log(LOGDEBUG, "CRBP::%s(%.5f) = %.5f", __func__, adjust, m_actual_pll_adjust);
+  return m_actual_pll_adjust;
 }
 
 #endif

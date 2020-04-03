@@ -236,7 +236,12 @@ bool COMXVideo::PortSettingsChanged(ResolutionUpdateInfo &resinfo)
 
   EINTERLACEMETHOD interlace_method = CMediaSettings::GetInstance().GetCurrentVideoSettings().m_InterlaceMethod;
   if (interlace_method == VS_INTERLACEMETHOD_AUTO)
+  {
     interlace_method = VS_INTERLACEMETHOD_MMAL_ADVANCED;
+    // avoid advanced deinterlace when using HD resolution
+    if (port_image.format.video.nFrameWidth * port_image.format.video.nFrameHeight > 720*576)
+      interlace_method = VS_INTERLACEMETHOD_MMAL_BOB;
+  }
 
   if (m_deinterlace && interlace_method != VS_INTERLACEMETHOD_NONE)
   {
@@ -398,6 +403,7 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
   switch (hints.codec)
   {
     case AV_CODEC_ID_H264:
+    case AV_CODEC_ID_H264_MVC:
     {
       switch(hints.profile)
       {
@@ -434,10 +440,13 @@ bool COMXVideo::Open(CDVDStreamInfo &hints, OMXClock *clock, bool hdmi_clock_syn
           break;
       }
     }
-    if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+    if ((hints.codec_tag == MKTAG('M', 'V', 'C', '1') || hints.codec_tag == MKTAG('A', 'M', 'V', 'C')) &&
+      CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
     {
       m_codingType = OMX_VIDEO_CodingMVC;
       m_video_codec_name = "omx-mvc";
+      if (hints.stereo_mode == "mono")
+        hints.stereo_mode = "block_lr";
     }
     break;
     case AV_CODEC_ID_MPEG4:

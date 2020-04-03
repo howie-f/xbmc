@@ -41,6 +41,17 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+
+typedef struct AVRpiZcFrameGeometry
+{
+  unsigned int stride_y;
+  unsigned int height_y;
+  unsigned int stride_c;
+  unsigned int height_c;
+  unsigned int planes_c;
+  unsigned int stripes;
+} AVRpiZcFrameGeometry;
+
 class CGPUMEM
 {
 public:
@@ -62,6 +73,7 @@ public:
   ~CRBP();
 
   bool Initialize();
+  void InitializeSettings();
   void LogFirmwareVerison();
   void Deinitialize();
   int GetArmMem() { return m_arm_mem; }
@@ -81,6 +93,9 @@ public:
   uint32_t WaitVsync(uint32_t target = ~0U);
   void VSyncCallback();
   int GetMBox() { return m_mb; }
+  AVRpiZcFrameGeometry GetFrameGeometry(uint32_t encoding, unsigned short video_width, unsigned short video_height);
+  double AdjustHDMIClock(double adjust);
+  double GetAdjustHDMIClock() { return m_actual_pll_adjust; }
 
 private:
   DllBcmHost *m_DllBcmHost;
@@ -102,6 +117,9 @@ private:
   CCriticalSection m_critSection;
 
   int m_mb;
+  double m_requested_pll_adjust;
+  double m_actual_pll_adjust;
+  public:
 };
 
 extern CRBP g_RBP;

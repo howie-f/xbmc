@@ -15,13 +15,13 @@
 #   EGL::EGL   - The EGL library
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_EGL egl QUIET)
+  pkg_check_modules(PC_EGL brcmegl QUIET)
 endif()
 
 find_path(EGL_INCLUDE_DIR EGL/egl.h
                           PATHS ${PC_EGL_INCLUDEDIR})
 
-find_library(EGL_LIBRARY NAMES EGL egl
+find_library(EGL_LIBRARY NAMES brcmEGL
                          PATHS ${PC_EGL_LIBDIR})
 
 set(EGL_VERSION ${PC_EGL_VERSION})

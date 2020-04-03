@@ -47,6 +47,10 @@
 
 #include "linux/RBP.h"
 
+#ifndef FF_BUG_GMC_UNSUPPORTED
+#define FF_BUG_GMC_UNSUPPORTED 0
+#endif
+
 using namespace KODI::MESSAGING;
 
 #define CLASSNAME "CMMALVideoBuffer"
@@ -74,7 +78,11 @@ CMMALVideoBuffer::CMMALVideoBuffer(CMMALVideo *omv, std::shared_ptr<CMMALPool> p
 CMMALVideoBuffer::~CMMALVideoBuffer()
 {
   if (mmal_buffer)
+  {
     mmal_buffer_header_release(mmal_buffer);
+    if (m_pool)
+      m_pool->Prime();
+  }
   if (VERBOSE && g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s %p", CLASSNAME, __func__, this);
 }
@@ -358,14 +366,24 @@ bool CMMALVideo::SendCodecConfigData()
   return true;
 }
 
+bool CMMALVideo::SupportsExtention()
+{
+  return CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC);
+}
+
 bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   CSingleLock lock(m_sharedSection);
   if (g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s usemmal:%d software:%d %dx%d renderer:%p", CLASSNAME, __func__, CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL), hints.software, hints.width, hints.height, options.m_opaque_pointer);
 
+  // This occurs at start of m2ts files before streams have been fully identified - just ignore
+  if (!hints.width)
+    return false;
   // we always qualify even if DVDFactoryCodec does this too.
   if (!CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_USEMMAL) || hints.software)
+    return false;
+  if (hints.workaround_bugs & FF_BUG_GMC_UNSUPPORTED)
     return false;
 
   std::list<EINTERLACEMETHOD> deintMethods;
@@ -394,13 +412,17 @@ bool CMMALVideo::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
   switch (hints.codec)
   {
     case AV_CODEC_ID_H264:
+    case AV_CODEC_ID_H264_MVC:
       // H.264
       m_codingType = MMAL_ENCODING_H264;
       m_pFormatName = "mmal-h264";
-      if (CSettings::GetInstance().GetBool(CSettings::SETTING_VIDEOPLAYER_SUPPORTMVC))
+      if ((hints.codec_tag == MKTAG('M', 'V', 'C', '1') || hints.codec_tag == MKTAG('A', 'M', 'V', 'C')) &&
+          SupportsExtention())
       {
         m_codingType = MMAL_ENCODING_MVC;
         m_pFormatName= "mmal-mvc";
+        if (hints.stereo_mode == "mono")
+          hints.stereo_mode = "block_lr";
       }
     break;
     case AV_CODEC_ID_H263:
@@ -621,8 +643,6 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     send_eos = false;
     m_got_eos = true;
   }
-  if (m_pool)
-    m_pool->Prime();
   while (1)
   {
      if (pData || send_eos)
@@ -711,7 +731,7 @@ int CMMALVideo::Decode(uint8_t* pData, int iSize, double dts, double pts)
     }
   }
 
-  if (g_advancedSettings.CanLogComponent(LOGVIDEO))
+  if (!ret || g_advancedSettings.CanLogComponent(LOGVIDEO))
     CLog::Log(LOGDEBUG, "%s::%s - ret(%x) pics(%d) inputs(%d) slept(%2d) queued(%.2f) (%.2f:%.2f) full(%d) flags(%x) preroll(%d) eos(%d %d/%d)", CLASSNAME, __func__, ret, m_output_ready.size(), mmal_queue_length(m_dec_input_pool->queue), 500-delay.MillisLeft(), queued*1e-6, m_demuxerPts*1e-6, m_decoderPts*1e-6, full, m_codecControlFlags,  m_preroll, m_got_eos, m_packet_num, m_packet_num_eos);
 
   return ret;
