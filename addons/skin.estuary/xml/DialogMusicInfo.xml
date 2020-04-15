@@ -392,7 +392,7 @@
 							<param name="icon" value="icons/infodialogs/youtube.png" />
 						</include>
 						<onclick>Action(close)</onclick>
-						<visible>System.hasAddon(script.extendedinfo)</visible>
+						<visible>false</visible>
 						<onclick condition="!String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Album])</onclick>
 						<onclick condition="String.IsEqual(ListItem.DBType,song)">RunScript(script.extendedinfo,info=youtubebrowser,id=$INFO[ListItem.Artist] $INFO[ListItem.Title])</onclick>
 					</control>
