@@ -35,8 +35,6 @@ public:
   CKeyboardStat();
   ~CKeyboardStat() = default;
 
-  void Initialize();
-
   CKey TranslateKey(XBMC_keysym& keysym) const;
 
   void ProcessKeyDown(XBMC_keysym& keysym);

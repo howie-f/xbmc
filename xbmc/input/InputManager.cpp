@@ -74,8 +74,6 @@ CInputManager::CInputManager(const CAppParamParser& params)
 
 CInputManager::~CInputManager()
 {
-  Deinitialize();
-
   // Unregister settings
   CServiceBroker::GetSettingsComponent()->GetSettings()->UnregisterCallback(this);
 
@@ -88,18 +86,12 @@ CInputManager::~CInputManager()
 
 void CInputManager::InitializeInputs()
 {
-  m_Keyboard.Initialize();
-
   m_Mouse.Initialize();
   m_Mouse.SetEnabled(CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_INPUT_ENABLEMOUSE));
 
   m_enableController = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       SETTING_INPUT_ENABLE_CONTROLLER);
-}
-
-void CInputManager::Deinitialize()
-{
 }
 
 bool CInputManager::ProcessPeripherals(float frameTime)

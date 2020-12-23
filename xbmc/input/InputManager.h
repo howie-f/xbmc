@@ -105,11 +105,6 @@ public:
    */
   void InitializeInputs();
 
-  /*!
-   * \brief Deinitialize input and keymaps
-   */
-  void Deinitialize();
-
   /*! \brief Handle an input event
    *
    * \param newEvent event details

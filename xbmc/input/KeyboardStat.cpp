@@ -38,10 +38,6 @@ CKeyboardStat::CKeyboardStat()
   m_lastKeyTime = 0;
 }
 
-void CKeyboardStat::Initialize()
-{
-}
-
 bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym& keysym, uint8_t* key, char* unicode)
 {
   using namespace PERIPHERALS;
