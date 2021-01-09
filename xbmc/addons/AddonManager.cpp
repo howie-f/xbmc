@@ -823,8 +823,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::NO) || addon == nullptr)
     return false;
 
-  auto addonInfo = GetAddonInfo(addon->ID());
-  if (!IsCompatible(addonInfo))
+  if (!IsCompatible(*addon))
   {
     CLog::Log(LOGERROR, "Add-on '%s' is not compatible with Kodi", addon->ID().c_str());
     CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(addon->Name(), 24152, EventLevel::Error)));
@@ -1007,6 +1006,27 @@ bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
 void CAddonMgr::PublishEventAutoUpdateStateChanged(const std::string& id)
 {
   m_events.Publish(AddonEvents::AutoUpdateStateChanged(id));
+}
+
+bool CAddonMgr::IsCompatible(const IAddon& addon) const
+{
+  for (const auto& dependency : addon.GetDependencies())
+  {
+    if (!dependency.optional)
+    {
+      // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
+      // not be missing anyway, unless addon was installed in an unsupported way.
+      if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
+          StringUtils::StartsWith(dependency.id, "kodi."))
+      {
+        AddonPtr addon;
+        bool haveAddon = GetAddon(dependency.id, addon, ADDON_UNKNOWN, OnlyEnabled::YES);
+        if (!haveAddon || !addon->MeetsVersion(dependency.versionMin, dependency.version))
+          return false;
+      }
+    }
+  }
+  return true;
 }
 
 bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const

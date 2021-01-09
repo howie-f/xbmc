@@ -360,6 +360,12 @@ namespace ADDON
     bool ServicesHasStarted() const;
 
     /*!
+     * @deprecated This addon function should no more used and becomes replaced
+     * in future with the other below by his callers.
+     */
+    bool IsCompatible(const IAddon& addon) const;
+
+    /*!
      * @brief Check given addon information is compatible with Kodi.
      *
      * @param[in] addonInfo Addon information to check
