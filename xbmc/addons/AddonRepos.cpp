@@ -110,7 +110,8 @@ bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database,
   m_addonsByRepoMap.clear();
   for (const auto& addon : m_allAddons)
   {
-    if (m_addonMgr.IsCompatible(*addon))
+    auto addonInfo = m_addonMgr.GetAddonInfo(addon->ID());
+    if (m_addonMgr.IsCompatible(addonInfo))
     {
       m_addonsByRepoMap[addon->Origin()].insert({addon->ID(), addon});
     }
@@ -495,7 +496,8 @@ void CAddonRepos::BuildCompatibleVersionsList(
 
   for (const auto& addon : m_allAddons)
   {
-    if (m_addonMgr.IsCompatible(*addon))
+    auto addonInfo = m_addonMgr.GetAddonInfo(addon->ID());
+    if (m_addonMgr.IsCompatible(addonInfo))
     {
       if (IsFromOfficialRepo(addon, CheckAddonPath::YES))
       {
