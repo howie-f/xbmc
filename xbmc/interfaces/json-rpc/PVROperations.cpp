@@ -431,6 +431,13 @@ JSONRPC_STATUS CPVROperations::GetRecordings(const std::string &method, ITranspo
     recordingsList.Add(std::make_shared<CFileItem>(recording));
   }
 
+  SortDescription sorting;
+  sorting.sortBy = SortByDate;
+  sorting.sortOrder = SortOrderDescending;
+  sorting.sortAttributes = SortAttributeNone;
+
+  recordingsList.Sort(sorting);
+
   HandleFileItemList("recordingid", true, "recordings", recordingsList, parameterObject, result, true);
 
   return OK;
