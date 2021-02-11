@@ -19,13 +19,10 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
-#include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "utils/Variant.h"
-
-#include <algorithm>
 
 using namespace JSONRPC;
 using namespace PVR;
@@ -487,13 +484,7 @@ JSONRPC_STATUS CPVROperations::GetRecordings(const std::string &method, ITranspo
     return FailedToExecute;
 
   CFileItemList recordingsList;
-  std::vector<std::shared_ptr<CPVRRecording>> recs = recordings->GetAll();
-
-  std::sort(recs.begin(), recs.end(), [](auto x, auto y) {
-    return x->RecordingTimeAsLocalTime().GetAsDBDateTime() >
-           y->RecordingTimeAsLocalTime().GetAsDBDateTime();
-  });
-
+  const std::vector<std::shared_ptr<CPVRRecording>> recs = recordings->GetAll();
   for (const auto& recording : recs)
   {
     recordingsList.Add(std::make_shared<CFileItem>(recording));
