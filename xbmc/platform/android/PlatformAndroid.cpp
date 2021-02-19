@@ -15,6 +15,8 @@
 
 #include <stdlib.h>
 
+#include "utils/log.h"
+
 CPlatform* CPlatform::CreateInstance()
 {
   return new CPlatformAndroid();
@@ -22,6 +24,7 @@ CPlatform* CPlatform::CreateInstance()
 
 bool CPlatformAndroid::Init()
 {
+  CLog::Log(LOGINFO, "FHW: start CPlatformAndroid::Init()");
   if (!CPlatformPosix::Init())
     return false;
   setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
@@ -32,5 +35,6 @@ bool CPlatformAndroid::Init()
 
   CAndroidPowerSyscall::Register();
 
+  CLog::Log(LOGINFO, "FHW: exit CPlatformAndroid::Init()");
   return true;
 }

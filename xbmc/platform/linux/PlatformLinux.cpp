@@ -7,6 +7,7 @@
  */
 
 #include "PlatformLinux.h"
+#include "utils/log.h"
 
 #include "utils/StringUtils.h"
 
@@ -47,6 +48,7 @@ CPlatform* CPlatform::CreateInstance()
 
 bool CPlatformLinux::Init()
 {
+  CLog::Log(LOGINFO, "FHW: start CPlatformLinux::Init()");
   if (!CPlatformPosix::Init())
     return false;
 
@@ -112,5 +114,6 @@ bool CPlatformLinux::Init()
 
   m_lirc.reset(OPTIONALS::LircRegister());
 
+  CLog::Log(LOGINFO, "FHW: exit CPlatformLinux::Init()");
   return true;
 }
