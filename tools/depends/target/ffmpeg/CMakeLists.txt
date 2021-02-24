@@ -101,6 +101,7 @@ externalproject_add(ffmpeg
                     CONFIGURE_COMMAND ${pkgconf} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
+		      --enable-small
                       --disable-devices
                       --disable-doc
                       --disable-ffplay
@@ -120,6 +121,11 @@ externalproject_add(ffmpeg
                       --enable-protocol=http
                       --enable-encoder=png
                       --enable-encoder=mjpeg
+                      --disable-libxcb
+                      --disable-libxcb-shape
+                      --disable-libxcb-shm
+                      --disable-libxcb-xfixes
+                      --disable-xlib
                       ${ffmpeg_conf})
 
 install(CODE "Message(Done)")
