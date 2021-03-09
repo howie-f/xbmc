@@ -2,6 +2,8 @@
 <includes>
 	<include name="View_502_FanArt">
 		<control type="group">
+			<top>20</top>
+			<bottom>20</bottom>
 			<include>OpenClose_Left</include>
 			<visible>Control.IsVisible(502)</visible>
 			<include>Visible_Left</include>
