@@ -597,7 +597,7 @@ void CGUIDialogAddonInfo::OnSettings()
 bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint entryPoint)
 {
   if (entryPoint != EntryPoint::INSTALL ||
-      (entryPoint == EntryPoint::INSTALL && !m_allDepsInstalled))
+      (entryPoint == EntryPoint::INSTALL && m_showDepDialogOnInstall))
   {
     auto pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
         WINDOW_DIALOG_SELECT);
@@ -743,7 +743,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
   if (!m_item)
     return;
 
-  m_allDepsInstalled = true;
+  m_showDepDialogOnInstall = false;
   m_depsInstalledWithAvailable.clear();
   m_deps = CServiceBroker::GetAddonMgr().GetDepsRecursive(m_item->GetAddonInfo()->ID(),
                                                           OnlyEnabledRootAddon::NO);
@@ -761,13 +761,21 @@ void CGUIDialogAddonInfo::BuildDependencyList()
                                                 OnlyEnabled::YES))
     {
       addonInstalled = nullptr;
-      m_allDepsInstalled = false;
     }
 
     // Find add-on in repositories
     if (!CServiceBroker::GetAddonMgr().FindInstallableById(dep.id, addonAvailable))
     {
       addonAvailable = nullptr;
+    }
+
+    if (!addonInstalled)
+    {
+      if (showAllDependencies || !addonAvailable ||
+          (addonAvailable && addonAvailable->MainType() != ADDON_SCRIPT_MODULE))
+      {
+        m_showDepDialogOnInstall = true;
+      }
     }
 
     // Depending on advancedsettings.xml <showalldependencies>:
