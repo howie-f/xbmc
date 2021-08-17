@@ -11,7 +11,6 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
@@ -406,8 +405,7 @@ bool CAddonsDirectory::GetSearchResults(const CURL& path, CFileItemList &items)
   if (search.empty() && !GetKeyboardInput(16017, search))
     return false;
 
-  CAddonDatabase database;
-  database.Open();
+  auto& database = CServiceBroker::GetAddonDatabase();
 
   VECADDONS addons;
   database.Search(search, addons);
