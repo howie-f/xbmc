@@ -191,8 +191,7 @@ CDateTime CRepositoryUpdater::LastUpdated() const
   if (!m_addonMgr.GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
     return CDateTime();
 
-  CAddonDatabase db;
-  db.Open();
+  auto& db = CServiceBroker::GetAddonDatabase();
   std::vector<CDateTime> updateTimes;
   std::transform(
       repos.begin(), repos.end(), std::back_inserter(updateTimes), [&](const AddonPtr& repo) {
@@ -211,8 +210,7 @@ CDateTime CRepositoryUpdater::ClosestNextCheck() const
   if (!m_addonMgr.GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
     return CDateTime();
 
-  CAddonDatabase db;
-  db.Open();
+  auto& db = CServiceBroker::GetAddonDatabase();
   std::vector<CDateTime> nextCheckTimes;
   std::transform(
       repos.begin(), repos.end(), std::back_inserter(nextCheckTimes), [&](const AddonPtr& repo) {
