@@ -80,7 +80,7 @@ namespace ADDON
     bool Init();
     void DeInit();
 
-    CAddonMgr() = default;
+    CAddonMgr();
     CAddonMgr(const CAddonMgr&) = delete;
     virtual ~CAddonMgr();
 
@@ -639,7 +639,7 @@ namespace ADDON
     std::map<std::string, AddonDisabledReason> m_disabled;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     mutable CCriticalSection m_critSection;
-    CAddonDatabase m_database;
+    CAddonDatabase& m_database;
     CAddonUpdateRules m_updateRules;
     CEventSource<AddonEvent> m_events;
     CBlockingEventSource<AddonEvent> m_unloadEvents;

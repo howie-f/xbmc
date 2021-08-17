@@ -14,6 +14,7 @@
 
 namespace ADDON
 {
+class CAddonDatabase;
 class CAddonMgr;
 class CBinaryAddonManager;
 class CBinaryAddonCache;
@@ -129,6 +130,7 @@ public:
   static ADDON::CAddonMgr& GetAddonMgr();
   static ADDON::CBinaryAddonManager& GetBinaryAddonManager();
   static ADDON::CBinaryAddonCache& GetBinaryAddonCache();
+  static ADDON::CAddonDatabase& GetAddonDatabase();
   static KODI::ADDONS::CExtsMimeSupportList& GetExtsMimeSupportList();
   static ADDON::CVFSAddonCache& GetVFSAddonCache();
   static XBPython& GetXBPython();

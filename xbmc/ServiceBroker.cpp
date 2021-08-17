@@ -77,6 +77,11 @@ void CServiceBroker::UnregisterAnnouncementManager()
   g_serviceBroker.m_pAnnouncementManager.reset();
 }
 
+ADDON::CAddonDatabase& CServiceBroker::GetAddonDatabase()
+{
+  return g_application.m_ServiceManager->GetAddonDatabase();
+}
+
 ADDON::CAddonMgr& CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();

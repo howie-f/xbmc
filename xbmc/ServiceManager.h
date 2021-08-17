@@ -14,6 +14,7 @@
 
 namespace ADDON
 {
+class CAddonDatabase;
 class CAddonMgr;
 class CBinaryAddonManager;
 class CBinaryAddonCache;
@@ -101,6 +102,7 @@ public:
   void DeinitStageTwo();
   void DeinitStageOne();
 
+  ADDON::CAddonDatabase& GetAddonDatabase();
   ADDON::CAddonMgr& GetAddonMgr();
   ADDON::CBinaryAddonManager& GetBinaryAddonManager();
   ADDON::CBinaryAddonCache& GetBinaryAddonCache();
@@ -163,6 +165,7 @@ protected:
     void operator()(CFavouritesService* p) const;
   };
 
+  std::unique_ptr<ADDON::CAddonDatabase> m_addonDb;
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;

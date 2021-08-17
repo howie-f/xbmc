@@ -12,6 +12,7 @@
 #include "DatabaseManager.h"
 #include "PlayListPlayer.h"
 #include "addons/AudioDecoder.h"
+#include "addons/AddonDatabase.h"
 #include "addons/BinaryAddonCache.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/RepositoryUpdater.h"
@@ -121,6 +122,15 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
   m_binaryAddonManager.reset(
       new ADDON::
           CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
+
+  /* initialize and open add-on database. needs to be done before add-on manager starts */
+  m_addonDb.reset(new ADDON::CAddonDatabase);
+  if (!m_addonDb->Open())
+  {
+    CLog::Log(LOGFATAL, "CServiceManager::{}: Unable to open CAddonDatabase", __FUNCTION__);
+    return false;
+  }
+
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -250,6 +260,7 @@ void CServiceManager::DeinitStageTwo()
   m_vfsAddonCache.reset();
   m_repositoryUpdater.reset();
   m_binaryAddonManager.reset();
+  m_addonDb.reset();
   m_addonMgr.reset();
   m_databaseManager.reset();
 
@@ -280,6 +291,11 @@ WSDiscovery::IWSDiscovery& CServiceManager::GetWSDiscovery()
   return *m_WSDiscovery;
 }
 #endif
+
+ADDON::CAddonDatabase& CServiceManager::GetAddonDatabase()
+{
+  return *m_addonDb;
+}
 
 ADDON::CAddonMgr& CServiceManager::GetAddonMgr()
 {

@@ -76,6 +76,10 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   return true;
 }
 
+CAddonMgr::CAddonMgr() : m_database(CServiceBroker::GetAddonDatabase())
+{
+}
+
 CAddonMgr::~CAddonMgr()
 {
   DeInit();
@@ -115,9 +119,6 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  if (!m_database.Open())
-    CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
-
   FindAddons();
 
   //Ensure required add-ons are installed and enabled
@@ -136,8 +137,6 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  m_database.Close();
-
   /* If temporary directory was used from add-on, delete it */
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
     XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
