@@ -9,7 +9,6 @@
 #include "AddonRepos.h"
 
 #include "Addon.h"
-#include "AddonDatabase.h"
 #include "AddonManager.h"
 #include "AddonRepoInfo.h"
 #include "AddonSystemSettings.h"
@@ -32,6 +31,24 @@ static std::vector<RepoInfo> officialRepoInfos = CCompileInfo::LoadOfficialRepoI
  * CAddonRepos
  *
  */
+
+CAddonRepos::CAddonRepos()
+  : m_addonMgr(CServiceBroker::GetAddonMgr()), m_addonDb(CServiceBroker::GetAddonDatabase())
+{
+  LoadAddonsFromDatabase("", nullptr);
+}
+
+CAddonRepos::CAddonRepos(const std::string& addonId)
+  : m_addonMgr(CServiceBroker::GetAddonMgr()), m_addonDb(CServiceBroker::GetAddonDatabase())
+{
+  LoadAddonsFromDatabase(addonId, nullptr);
+}
+
+CAddonRepos::CAddonRepos(const std::shared_ptr<IAddon>& repoAddon)
+  : m_addonMgr(CServiceBroker::GetAddonMgr()), m_addonDb(CServiceBroker::GetAddonDatabase())
+{
+  LoadAddonsFromDatabase("", repoAddon);
+}
 
 bool CAddonRepos::IsFromOfficialRepo(const std::shared_ptr<IAddon>& addon,
                                      CheckAddonPath checkAddonPath)
@@ -58,56 +75,36 @@ bool CAddonRepos::IsOfficialRepo(const std::string& repoId)
                                                 });
 }
 
-bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database)
-{
-  return LoadAddonsFromDatabase(database, "", nullptr);
-}
-
-bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database, const std::string& addonId)
-{
-  return LoadAddonsFromDatabase(database, addonId, nullptr);
-}
-
-bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database,
+void CAddonRepos::LoadAddonsFromDatabase(const std::string& addonId,
                                          const std::shared_ptr<IAddon>& repoAddon)
 {
-  return LoadAddonsFromDatabase(database, "", repoAddon);
-}
-
-bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database,
-                                         const std::string& addonId,
-                                         const std::shared_ptr<IAddon>& repoAddon)
-{
-  m_allAddons.clear();
-
   if (repoAddon)
   {
-    if (!database.GetRepositoryContent(repoAddon->ID(), m_allAddons))
+    if (!m_addonDb.GetRepositoryContent(repoAddon->ID(), m_allAddons))
     {
       // Repo content is invalid. Ask for update and wait.
       CServiceBroker::GetRepositoryUpdater().CheckForUpdates(
           std::static_pointer_cast<CRepository>(repoAddon));
       CServiceBroker::GetRepositoryUpdater().Await();
 
-      if (!database.GetRepositoryContent(repoAddon->ID(), m_allAddons))
+      if (!m_addonDb.GetRepositoryContent(repoAddon->ID(), m_allAddons))
       {
         KODI::MESSAGING::HELPERS::ShowOKDialogText(CVariant{repoAddon->Name()}, CVariant{24991});
-        return false;
+        return;
       }
     }
   }
   else if (addonId.empty())
   {
     // load full repository content
-    database.GetRepositoryContent(m_allAddons);
+    m_addonDb.GetRepositoryContent(m_allAddons);
   }
   else
   {
     // load specific addonId only
-    database.FindByAddonId(addonId, m_allAddons);
+    m_addonDb.FindByAddonId(addonId, m_allAddons);
   }
 
-  m_addonsByRepoMap.clear();
   for (const auto& addon : m_allAddons)
   {
     if (m_addonMgr.IsCompatible(*addon))
@@ -120,16 +117,10 @@ bool CAddonRepos::LoadAddonsFromDatabase(const CAddonDatabase& database,
     CLog::Log(LOGDEBUG, "ADDONS: repo: {} - {} addon(s) loaded", map.first, map.second.size());
 
   SetupLatestVersionMaps();
-
-  return true;
 }
 
 void CAddonRepos::SetupLatestVersionMaps()
 {
-  m_latestOfficialVersions.clear();
-  m_latestPrivateVersions.clear();
-  m_latestVersionsByRepo.clear();
-
   for (const auto& repo : m_addonsByRepoMap)
   {
     const auto& addonsPerRepo = repo.second;

@@ -47,33 +47,9 @@ struct CAddonWithUpdate
 class CAddonRepos
 {
 public:
-  CAddonRepos() = delete;
-  explicit CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr) {}
-
-  /*!
-   * \brief Load the map of all available addon versions in any installed repository
-   * \param database reference to the database to load addons from
-   * \return true on success, false otherwise
-   */
-  bool LoadAddonsFromDatabase(const CAddonDatabase& database);
-
-  /*!
-   * \brief Load the map of all available versions of an addonId in any installed repository
-   * \param database reference to the database to load addons from
-   * \param addonId the addon id we want to retrieve versions for
-   * \return true on success, false otherwise
-   */
-  bool LoadAddonsFromDatabase(const CAddonDatabase& database, const std::string& addonId);
-
-  /*!
-   * \brief Load the map of all available versions in one installed repository
-   * \param database reference to the database to load addons from
-   * \param repoAddon pointer to the repo we want to retrieve versions from
-   *        note this is of type AddonPtr, not RepositoryPtr
-   * \return true on success, false otherwise
-   */
-  bool LoadAddonsFromDatabase(const CAddonDatabase& database,
-                              const std::shared_ptr<IAddon>& repoAddon);
+  CAddonRepos(); // load all addons from db
+  explicit CAddonRepos(const std::string& addonId); // load by addonid
+  explicit CAddonRepos(const std::shared_ptr<IAddon>& repoAddon); // load by repo ptr
 
   /*!
    * \brief Build the list of addons to be updated depending on defined rules
@@ -191,15 +167,19 @@ public:
    */
   void BuildCompatibleVersionsList(std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
 
+  /*!
+   * \brief Return whether the fetched list of compatible add-ons is empty
+   * \return true or false
+   */
+  bool IsEmpty() const { return m_addonsByRepoMap.empty(); }
+
 private:
   /*!
    * \brief Load the map of addons
    * \note this function should only by called from publicly exposed wrappers
    * \return true on success, false otherwise
    */
-  bool LoadAddonsFromDatabase(const CAddonDatabase& database,
-                              const std::string& addonId,
-                              const std::shared_ptr<IAddon>& repoAddon);
+  void LoadAddonsFromDatabase(const std::string& addonId, const std::shared_ptr<IAddon>& repoAddon);
 
   /*!
    * \brief Looks up an addon in a given repository map and
@@ -253,6 +233,7 @@ private:
                              std::shared_ptr<IAddon>& addon) const;
 
   const CAddonMgr& m_addonMgr;
+  CAddonDatabase& m_addonDb;
 
   std::vector<std::shared_ptr<IAddon>> m_allAddons;
 

@@ -953,15 +953,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
   if (ShouldCancel(0, totalSteps))
     return false;
 
-  const auto& addonMgr = CServiceBroker::GetAddonMgr();
-  CAddonRepos addonRepos(addonMgr);
-  CAddonDatabase database;
-
-  if (database.Open())
-  {
-    addonRepos.LoadAddonsFromDatabase(database);
-    database.Close();
-  }
+  CAddonRepos addonRepos; // loads all addons from db
 
   // The first thing we do is install dependencies
   for (auto it = deps.begin(); it != deps.end(); ++it)
@@ -973,8 +965,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       const AddonVersion& version = it->version;
       bool optional = it->optional;
       AddonPtr dependency;
-      bool haveInstalledAddon =
-          addonMgr.GetAddon(addonID, dependency, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO);
+      bool haveInstalledAddon = CServiceBroker::GetAddonMgr().GetAddon(
+          addonID, dependency, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO);
       if ((haveInstalledAddon && !dependency->MeetsVersion(versionMin, version)) ||
           (!haveInstalledAddon && !optional))
       {

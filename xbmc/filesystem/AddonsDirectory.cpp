@@ -522,15 +522,9 @@ static bool Browse(const CURL& path, CFileItemList &items)
   items.SetPath(path.Get());
   if (repoId == "all")
   {
-    const auto& addonMgr = CServiceBroker::GetAddonMgr();
-    CAddonRepos addonRepos(addonMgr);
-    CAddonDatabase database;
-
-    if (!database.Open() || !addonRepos.LoadAddonsFromDatabase(database))
-    {
+    CAddonRepos addonRepos; // loads all addons from db
+    if (addonRepos.IsEmpty())
       return false;
-    }
-    database.Close();
 
     // get all latest addon versions by repo
     addonRepos.GetLatestAddonVersionsFromAllRepos(addons);
@@ -541,19 +535,14 @@ static bool Browse(const CURL& path, CFileItemList &items)
   else
   {
     AddonPtr repoAddon;
-    const auto& addonMgr = CServiceBroker::GetAddonMgr();
 
-    if (!addonMgr.GetAddon(repoId, repoAddon, ADDON_REPOSITORY, OnlyEnabled::CHOICE_YES))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repoAddon, ADDON_REPOSITORY,
+                                                OnlyEnabled::CHOICE_YES))
       return false;
 
-    CAddonRepos addonRepos(addonMgr);
-    CAddonDatabase database;
-
-    if (!database.Open() || !addonRepos.LoadAddonsFromDatabase(database, repoAddon))
-    {
+    CAddonRepos addonRepos(repoAddon); // loads by repo pointer
+    if (addonRepos.IsEmpty())
       return false;
-    }
-    database.Close();
 
     // get all addons from the single repository
     addonRepos.GetLatestAddonVersions(addons);
