@@ -116,8 +116,8 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
   }
   lock.unlock();
 
-  CAddonDatabase database;
-  database.Open();
+  auto& database = CServiceBroker::GetAddonDatabase();
+
   for (std::vector<std::string>::iterator it = addonIDs.begin(); it != addonIDs.end(); ++it)
   {
     AddonPtr addon;
@@ -168,8 +168,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
                   // the addon - should we enable it?
 
   // check we have it available
-  CAddonDatabase database;
-  database.Open();
+  auto& database = CServiceBroker::GetAddonDatabase();
   if (!database.GetAddon(addonID, addon))
     return false;
 
@@ -255,9 +254,9 @@ bool CAddonInstaller::Install(const std::string& addonId,
             version.asString(), repoId);
 
   AddonPtr addon;
-  CAddonDatabase database;
+  auto& database = CServiceBroker::GetAddonDatabase();
 
-  if (!database.Open() || !database.GetAddon(addonId, version, repoId, addon))
+  if (!database.GetAddon(addonId, version, repoId, addon))
     return false;
 
   AddonPtr repo;
@@ -452,8 +451,9 @@ void CAddonInstaller::PrunePackageCache()
   // Prune packages
   // 1. Remove the largest packages, leaving at least 2 for each add-on
   CFileItemList items;
-  CAddonDatabase db;
-  db.Open();
+
+  auto& db = CServiceBroker::GetAddonDatabase();
+
   for (auto it = packs.begin(); it != packs.end(); ++it)
   {
     it->second->Sort(SortByLabel, SortOrderDescending);
@@ -612,13 +612,7 @@ bool CAddonInstallJob::DoWork()
         }
       }
 
-      CAddonDatabase db;
-      if (!db.Open())
-      {
-        CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to open database", m_addon->ID());
-        ReportInstallError(m_addon->ID(), m_addon->ID());
-        return false;
-      }
+      auto& db = CServiceBroker::GetAddonDatabase();
 
       std::string packageOriginalPath, packageFileName;
       URIUtils::Split(path, packageOriginalPath, packageFileName);
@@ -1076,12 +1070,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
 void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)
 {
   AddonPtr addon;
-  CAddonDatabase database;
-  if (database.Open())
-  {
-    database.GetAddon(addonID, addon);
-    database.Close();
-  }
+  CServiceBroker::GetAddonDatabase().GetAddon(addonID, addon);
 
   MarkFinished();
 
@@ -1146,10 +1135,11 @@ bool CAddonUnInstallJob::DoWork()
   }
 
   AddonPtr addon;
-  CAddonDatabase database;
+  auto& database = CServiceBroker::GetAddonDatabase();
+
   // try to get the addon object from the repository as the local one does not exist anymore
   // if that doesn't work fall back to the local one
-  if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || addon == NULL)
+  if (!database.GetAddon(m_addon->ID(), addon) || addon == nullptr)
     addon = m_addon;
   auto eventLog = CServiceBroker::GetEventLog();
   if (eventLog)
