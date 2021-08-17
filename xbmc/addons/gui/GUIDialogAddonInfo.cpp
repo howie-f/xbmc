@@ -12,7 +12,6 @@
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonRepos.h"
@@ -353,8 +352,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
   for (const auto& compatibleVersion : compatibleVersions)
     versions.emplace_back(compatibleVersion->Version(), compatibleVersion->Origin());
 
-  CAddonDatabase database;
-  database.Open();
+  auto& database = CServiceBroker::GetAddonDatabase();
 
   CFileItemList items;
   if (XFILE::CDirectory::GetDirectory("special://home/addons/packages/", items, ".zip",
