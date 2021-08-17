@@ -11,7 +11,6 @@
 #include "JSONUtils.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
-#include "addons/AddonDatabase.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "filesystem/File.h"
@@ -119,7 +118,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   int start, end;
   HandleLimits(parameterObject, result, addons.size(), start, end);
 
-  CAddonDatabase addondb;
+  auto& addondb = CServiceBroker::GetAddonDatabase();
   for (int index = start; index < end; index++)
     FillDetails(addons.at(index), parameterObject["properties"], result["addons"], addondb, true);
 
@@ -135,7 +134,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
       addon.get() == NULL || addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
     return InvalidParams;
 
-  CAddonDatabase addondb;
+  auto& addondb = CServiceBroker::GetAddonDatabase();
   FillDetails(addon, parameterObject["properties"], result["addon"], addondb);
 
   return OK;
