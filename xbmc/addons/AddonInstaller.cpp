@@ -355,26 +355,26 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   return false;
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonPtr& addon, CAddonDatabase& database)
 {
   std::pair<std::string, std::string> failedDep;
   return CheckDependencies(addon, failedDep, database);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonPtr& addon,
+                                        std::pair<std::string, std::string>& failedDep,
+                                        CAddonDatabase& database)
 {
   std::vector<std::string> preDeps;
   preDeps.push_back(addon->ID());
-  CAddonDatabase localDB;
-  if (!database)
-    database = &localDB;
 
-  return CheckDependencies(addon, preDeps, *database, failedDep);
+  return CheckDependencies(addon, preDeps, database, failedDep);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
-                                        std::vector<std::string>& preDeps, CAddonDatabase &database,
-                                        std::pair<std::string, std::string> &failedDep)
+bool CAddonInstaller::CheckDependencies(const AddonPtr& addon,
+                                        std::vector<std::string>& preDeps,
+                                        CAddonDatabase& database,
+                                        std::pair<std::string, std::string>& failedDep)
 {
   if (addon == NULL)
     return true; // a NULL addon has no dependencies
@@ -573,7 +573,9 @@ bool CAddonInstallJob::DoWork()
   // check whether all the dependencies are available or not
   SetText(g_localizeStrings.Get(24058));
   std::pair<std::string, std::string> failedDep;
-  if (!CAddonInstaller::GetInstance().CheckDependencies(m_addon, failedDep))
+
+  auto& database = CServiceBroker::GetAddonDatabase();
+  if (!CAddonInstaller::GetInstance().CheckDependencies(m_addon, failedDep, database))
   {
     std::string details =
         StringUtils::Format(g_localizeStrings.Get(24142), failedDep.first, failedDep.second);
