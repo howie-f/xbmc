@@ -12,7 +12,6 @@
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "URL.h"
-#include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
@@ -330,9 +329,8 @@ CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(r
 bool CRepositoryUpdateJob::DoWork()
 {
   CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checking for updates.", m_repo->ID());
-  CAddonDatabase database;
-  database.Open();
 
+  auto& database = CServiceBroker::GetAddonDatabase();
   std::string oldChecksum;
   if (database.GetRepoChecksum(m_repo->ID(), oldChecksum) == -1)
     oldChecksum = "";
