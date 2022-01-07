@@ -23,4 +23,5 @@ public:
   static const char* GetCopyrightYears();
   static std::string GetBuildDate();
   static const char* GetVersionCode();
+  static std::string GetEdition() { return "Frank's Edition"; };
 };

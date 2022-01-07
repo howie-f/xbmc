@@ -1242,6 +1242,12 @@ std::string CSysInfo::GetVersion()
          " Git:" + CCompileInfo::GetSCMID();
 }
 
+std::string CSysInfo::GetVersionAndEdition()
+{
+  return GetVersionShort() + " (" + CCompileInfo::GetVersionCode() + ")" +
+         " | " + CCompileInfo::GetEdition();
+}
+
 std::string CSysInfo::GetBuildDate()
 {
   return CCompileInfo::GetBuildDate();
