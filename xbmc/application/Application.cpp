@@ -2378,13 +2378,36 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (!bRestart)
   {
     // bRestart will be true when called from PlayStack(), skipping this block
-    appPlayer->SetPlaySpeed(1);
+    if (item.IsVideo())
+    {
+      // we need to check if a video lock is set up
+      if (WINDOW_VIDEO_NAV != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() &&
+          CServiceBroker::GetSettingsComponent()
+              ->GetProfileManager()
+              ->GetCurrentProfile()
+              .videoLocked() &&
+          !g_passwordManager.IsMasterLockUnlocked(false))
+      {
+        if (item.GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
+        {
+          if (CGUIDialogKaiToast::IsQueueEmpty())
+          {
+            CGUIDialogKaiToast::QueueNotification(
+                CGUIDialogKaiToast::Info, g_localizeStrings.Get(12348), "", TOAST_DISPLAY_TIME,
+                false, // this toast is forced to be silent
+                TOAST_MESSAGE_TIME);
+          }
 
+          return true; // exit func without starting playback
+        }
+      }
+
+      CUtil::ClearSubtitles();
+    }
+
+    appPlayer->SetPlaySpeed(1);
     m_nextPlaylistItem = -1;
     stackHelper->Clear();
-
-    if (item.IsVideo())
-      CUtil::ClearSubtitles();
   }
 
   if (item.IsDiscStub())
