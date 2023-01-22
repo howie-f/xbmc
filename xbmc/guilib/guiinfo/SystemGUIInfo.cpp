@@ -198,7 +198,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value,
       value = CSysInfo::GetVersionShort();
       return true;
     case SYSTEM_BUILD_VERSION:
-      value = CSysInfo::GetVersion();
+      value = CSysInfo::GetVersionAndEdition();
       return true;
     case SYSTEM_BUILD_DATE:
       value = CSysInfo::GetBuildDate();
