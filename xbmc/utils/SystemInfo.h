@@ -138,6 +138,7 @@ public:
   static std::string GetUserAgent();
   static std::string GetDeviceName();
   static std::string GetVersion();
+  static std::string GetVersionAndEdition();
   static std::string GetVersionShort();
   static std::string GetVersionCode();
   static std::string GetVersionGit();
