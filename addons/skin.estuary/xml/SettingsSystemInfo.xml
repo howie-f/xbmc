@@ -310,32 +310,7 @@
 						<width>auto</width>
 						<height>40</height>
 						<font>font12</font>
-						<label>$INFO[System.BuildVersionShort]$INFO[System.BuildVersionCode, (,)]</label>
-						<textcolor>button_focus</textcolor>
-						<shadowcolor>black</shadowcolor>
-					</control>
-				</control>
-				<control type="grouplist">
-					<description>Git version</description>
-					<itemgap>10</itemgap>
-					<top>235</top>
-					<left>420</left>
-					<width>820</width>
-					<orientation>horizontal</orientation>
-					<control type="label">
-						<description>Git label</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>Git:</label>
-						<shadowcolor>black</shadowcolor>
-					</control>
-					<control type="label">
-						<description>Git version</description>
-						<width>auto</width>
-						<height>40</height>
-						<font>font12</font>
-						<label>$INFO[System.BuildVersionGit]</label>
+						<label>$INFO[System.BuildVersion]</label>
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
@@ -343,7 +318,7 @@
 				<control type="grouplist">
 					<description>Build date</description>
 					<itemgap>10</itemgap>
-					<top>270</top>
+					<top>235</top>
 					<left>420</left>
 					<width>820</width>
 					<orientation>horizontal</orientation>
