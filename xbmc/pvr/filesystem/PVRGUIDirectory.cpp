@@ -401,37 +401,6 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
   return recPath.IsValid();
 }
 
-bool CPVRGUIDirectory::FilterDirectory(CFileItemList& results) const
-{
-  if (!results.IsEmpty())
-  {
-    if (m_url.HasOption("view"))
-    {
-      const std::string view = m_url.GetOption("view");
-      if (view == "lastplayed")
-      {
-        // remove channels never played so far
-        for (int i = 0; i < results.Size(); ++i)
-        {
-          const std::shared_ptr<CPVRChannel> channel = results.Get(i)->GetPVRChannelInfoTag();
-          time_t lastWatched = channel->LastWatched();
-          if (!lastWatched)
-          {
-            results.Remove(i);
-            --i;
-          }
-        }
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "Unsupported value '{}' for channel list URL parameter 'view'", view);
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
 bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio, bool bExcludeHidden, CFileItemList& results)
 {
   const CPVRChannelGroups* channelGroups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
@@ -495,10 +464,22 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 
       if (group)
       {
-        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers = group->GetMembers();
+        bool playedOnly = false;
+        if (m_url.HasOption("view"))
+        {
+          const std::string view = m_url.GetOption("view");
+          if (view == "lastplayed")
+            playedOnly = true;
+        }
+
+        const std::vector<std::shared_ptr<PVRChannelGroupMember>> groupMembers =
+            group->GetMembers();
         for (const auto& groupMember : groupMembers)
         {
           if (bShowHiddenChannels != groupMember->channel->IsHidden())
+            continue;
+
+          if (playedOnly && !groupMember->channel->LastWatched())
             continue;
 
           results.Add(std::make_shared<CFileItem>(groupMember->channel));
@@ -510,7 +491,6 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
         return false;
       }
 
-      FilterDirectory(results);
       return true;
     }
   }
