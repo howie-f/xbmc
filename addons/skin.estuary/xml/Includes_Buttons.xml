@@ -243,7 +243,7 @@
 			<aligny>top</aligny>
 			<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 			<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
-			<textoffsetx>22</textoffsetx>
+			<textoffsetx>35</textoffsetx>
 			<textoffsety>78</textoffsety>
 			<radioposx>108</radioposx>
 			<radioposy>13</radioposy>
@@ -270,7 +270,7 @@
 				<aligny>top</aligny>
 				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
 				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
-				<textoffsetx>22</textoffsetx>
+				<textoffsetx>35</textoffsetx>
 				<textoffsety>78</textoffsety>
 				<radioposx>108</radioposx>
 				<radioposy>16</radioposy>
