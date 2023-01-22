@@ -597,11 +597,16 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroup::RemoveDeletedChannel
   std::vector<std::shared_ptr<CPVRChannel>> removedChannels;
   CSingleLock lock(m_critSection);
 
-  /* check for deleted channels */
+  // put group members into map to speedup the following lookups
+  std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> membersMap(
+      channels.m_members);
+
+  // check for deleted channels
   for (auto it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
     const std::shared_ptr<CPVRChannel> channel = (*it)->channel;
-    if (channels.m_members.find(channel->StorageId()) == channels.m_members.end())
+    auto mapIt = membersMap.find(channel->StorageId());
+    if (mapIt == membersMap.end())
     {
       m_members.erase(channel->StorageId());
       it = m_sortedMembers.erase(it);
@@ -617,8 +622,9 @@ std::vector<std::shared_ptr<CPVRChannel>> CPVRChannelGroup::RemoveDeletedChannel
     }
     else
     {
-      ++it;
+      membersMap.erase(mapIt);
     }
+    ++it;
   }
 
   return removedChannels;
