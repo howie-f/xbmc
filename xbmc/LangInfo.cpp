@@ -76,21 +76,12 @@ static std::string shortDateFormats[] = {
 };
 
 static std::string longDateFormats[] = {
-  "DDDD, D MMMM YYYY",
-  "DDDD, DD MMMM YYYY",
   "DDDD, D. MMMM YYYY",
   "DDDD, DD. MMMM YYYY",
-  "DDDD, MMMM D, YYYY",
-  "DDDD, MMMM DD, YYYY",
-  "DDDD D MMMM YYYY",
-  "DDDD DD MMMM YYYY",
-  "DDDD D. MMMM YYYY",
-  "DDDD DD. MMMM YYYY",
   "D. MMMM YYYY",
   "DD. MMMM YYYY",
-  "D. MMMM. YYYY",
-  "DD. MMMM. YYYY",
-  "YYYY. MMMM. D"
+  "ddd., D.MM.YYYY",
+  "ddd., DD.MM.YYYY"
 };
 
 #define TIME_FORMAT_MM_SS         ":mm:ss"
