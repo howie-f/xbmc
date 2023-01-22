@@ -13,7 +13,7 @@
 #include "input/Key.h"
 #include "threads/SingleLock.h"
 
-#define VOLUME_BAR_DISPLAY_TIME 1000L
+#define VOLUME_BAR_DISPLAY_TIME 3500L
 
 CGUIDialogVolumeBar::CGUIDialogVolumeBar(void)
   : CGUIDialog(WINDOW_DIALOG_VOLUME_BAR, "DialogVolumeBar.xml", DialogModalityType::MODELESS)
