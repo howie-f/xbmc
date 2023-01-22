@@ -958,12 +958,18 @@ void CPVRChannelGroup::OnSettingChanged(const std::shared_ptr<const CSetting>& s
 
 CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
 {
+  std::map<std::pair<int, int>, std::shared_ptr<PVRChannelGroupMember>> members;
+  {
+    // Processing can take some time. Do not block.
+    CSingleLock lock(m_critSection);
+    members = m_members;
+  }
+
   CDateTime date;
   std::shared_ptr<CPVREpg> epg;
   std::shared_ptr<CPVRChannel> channel;
-  CSingleLock lock(m_critSection);
 
-  for (const auto& memberPair : m_members)
+  for (const auto& memberPair : members)
   {
     channel = memberPair.second->channel;
     if (!channel->IsHidden() && (epg = channel->GetEPG()))
