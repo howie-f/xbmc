@@ -36,4 +36,5 @@ public:
   static std::vector<ADDON::RepoInfo> LoadOfficialRepoInfos();
   static std::string GetPythonVersion();
   static std::vector<std::string> GetWebserverExtraWhitelist();
+  static std::string GetEdition() { return "Frank's Edition"; };
 };
