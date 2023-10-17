@@ -93,9 +93,14 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
     CHECK_CXX_ACCEPTS_FLAG("-mavx2" _AVX2_OK)
    endif()
 elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+
+      include(CMakePrintHelpers)
+      cmake_print_variables(CPU)
+
+
    if(NOT CPU MATCHES "arm")
-      execute_process(COMMAND /usr/sbin/sysctl -a
-                      COMMAND grep cpu.feat OUTPUT_VARIABLE CPUINFO)
+      execute_process(COMMAND /usr/sbin/sysctl -a OUTPUT_VARIABLE CPUINFO)
+
 
       string(REGEX REPLACE "^.*[^S](SSE).*$" "\\1" _SSE_THERE "${CPUINFO}")
       string(COMPARE EQUAL "SSE" "${_SSE_THERE}" _SSE_TRUE)
