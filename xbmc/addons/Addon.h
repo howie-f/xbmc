@@ -472,6 +472,8 @@ protected:
   const AddonInfoPtr m_addonInfo;
 
 private:
+  const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename) const;
+
   struct CSettingsData
   {
     bool m_loadSettingsFailed{false};
