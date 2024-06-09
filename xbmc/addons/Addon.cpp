@@ -311,7 +311,7 @@ private:
 	std::unordered_map<std::string, CacheItem> XMLFileCache{};
 };
 
-const CXBMCTinyXML* loadXMLFile(const std::string& id, const std::string& xmlFilename)
+const CXBMCTinyXML* CAddon::loadXMLFile(const std::string& id, const std::string& xmlFilename) const
 {
 	static FilenameXMLCache cache;
 	return cache.loadXMLFile(id, xmlFilename);
