@@ -60,6 +60,7 @@ public:
    */
   bool CheckSettingLevelLock(const SettingLevel& level, bool enforce = false);
   bool CheckMenuLock(int iWindowID);
+  bool IsVideoUnlocked();
   bool SetMasterLockMode(bool bDetails=true);
   bool LockSource(const std::string& strType, const std::string& strName, bool bState);
   void LockSources(bool lock);
