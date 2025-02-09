@@ -35,6 +35,7 @@
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
+#include <type_traits>
 #include <utility>
 
 using namespace KODI::MESSAGING;
@@ -49,11 +50,11 @@ CGUIPassword::~CGUIPassword(void) = default;
 template<typename T>
 bool CGUIPassword::IsItemUnlocked(T pItem,
                                   const std::string& strType,
-                                  const std::string& strLabel,
                                   const std::string& strHeading)
 {
   const std::shared_ptr<CProfileManager> profileManager =
       CServiceBroker::GetSettingsComponent()->GetProfileManager();
+
   if (profileManager->GetMasterProfile().getLockMode() == LockMode::EVERYONE)
     return true;
 
@@ -75,6 +76,15 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
       // show the appropriate lock dialog
       iResult = VerifyPassword(pItem->m_iLockMode, strLockCode, strHeading);
     }
+
+    // Set the appropiate label depending on template specialization
+    std::string strLabel{};
+    if constexpr (std::is_same_v<T, CFileItem*>)
+      strLabel = pItem->GetLabel();
+
+    if constexpr (std::is_same_v<T, CMediaSource*>)
+      strLabel = pItem->strName;
+
     switch (iResult)
     {
     case -1:
@@ -121,22 +131,18 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
 
 bool CGUIPassword::IsItemUnlocked(CFileItem* pItem, const std::string& strType)
 {
-  const std::string strLabel = pItem->GetLabel();
-  std::string strHeading;
-  if (pItem->m_bIsFolder)
-    strHeading = g_localizeStrings.Get(12325); // "Locked! Enter code..."
-  else
-    strHeading = g_localizeStrings.Get(12348); // "Item locked"
-
-  return IsItemUnlocked<CFileItem*>(pItem, strType, strLabel, strHeading);
+  return IsItemUnlocked<CFileItem*>(pItem, strType,
+                                    pItem->m_bIsFolder
+                                        ? g_localizeStrings.Get(12325) // "Locked! Enter code..."
+                                        : g_localizeStrings.Get(12348) // "Item locked"
+  );
 }
 
 bool CGUIPassword::IsItemUnlocked(CMediaSource* pItem, const std::string& strType)
 {
-  const std::string strLabel = pItem->strName;
-  const std::string& strHeading = g_localizeStrings.Get(12325); // "Locked! Enter code..."
-
-  return IsItemUnlocked<CMediaSource*>(pItem, strType, strLabel, strHeading);
+  return IsItemUnlocked<CMediaSource*>(pItem, strType,
+                                       g_localizeStrings.Get(12325) // "Locked! Enter code..."
+  );
 }
 
 bool CGUIPassword::CheckStartUpLock()
