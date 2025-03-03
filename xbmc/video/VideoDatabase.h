@@ -12,6 +12,7 @@
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
+#include "utils/Map.h"
 #include "utils/SortUtils.h"
 #include "utils/UrlOptions.h"
 
@@ -19,6 +20,8 @@
 #include <set>
 #include <utility>
 #include <vector>
+
+#include <fmt/format.h>
 
 class CFileItem;
 class CFileItemList;
@@ -178,6 +181,30 @@ enum class VideoDbContentType
   EPISODES = 4,
   MOVIE_SETS = 5,
   MUSICALBUMS = 6
+};
+
+template<>
+struct fmt::formatter<VideoDbContentType> : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  constexpr auto format(VideoDbContentType videoDbContentType, FormatContext& ctx)
+  {
+    const auto it = videoDbContentTypeMap.find(videoDbContentType);
+    if (it == videoDbContentTypeMap.cend())
+      throw std::range_error("no VideoDbContentType string found");
+
+    return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+private:
+  static constexpr auto videoDbContentTypeMap = make_map<VideoDbContentType, std::string_view>({
+      {VideoDbContentType::MOVIES, "Movies"},
+      {VideoDbContentType::TVSHOWS, "TV shows"},
+      {VideoDbContentType::MUSICVIDEOS, "Music videos"},
+      {VideoDbContentType::EPISODES, "Episodes"},
+      {VideoDbContentType::MOVIE_SETS, "Movie sets"},
+      {VideoDbContentType::MUSICALBUMS, "Music albums"},
+  });
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
