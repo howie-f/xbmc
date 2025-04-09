@@ -657,8 +657,8 @@
 							<label>$LOCALIZE[31003]</label>
 							<icon>icons/infodialogs/cinema.png</icon>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>RunScript(script.cinemavision,experience)</onclick>
-							<visible>System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]</visible>
+							<onclick>RunScript(script.preshowexperience,experience)</onclick>
+							<visible>System.AddonIsEnabled(script.preshowexperience) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]</visible>
 						</item>
 						<item>
 							<label>$LOCALIZE[31033]</label>
