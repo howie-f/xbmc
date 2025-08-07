@@ -2440,26 +2440,16 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
   double correction = 0.0;
   if( pPacket->dts > maxdts + DVD_MSEC_TO_TIME(1000))
   {
-    CLog::Log(LOGDEBUG,
-              "CVideoPlayer::CheckContinuity - resync forward :{}, prev:{:f}, curr:{:f}, diff:{:f}",
-              current.type, current.dts, pPacket->dts, pPacket->dts - maxdts);
     correction = pPacket->dts - maxdts;
   }
 
   /* if it's large scale jump, correct for it after having confirmed the jump */
   if(pPacket->dts + DVD_MSEC_TO_TIME(500) < current.dts_end())
   {
-    CLog::Log(
-        LOGDEBUG,
-        "CVideoPlayer::CheckContinuity - resync backward :{}, prev:{:f}, curr:{:f}, diff:{:f}",
-        current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
     correction = pPacket->dts - current.dts_end();
   }
   else if(pPacket->dts < current.dts)
   {
-    CLog::Log(LOGDEBUG,
-              "CVideoPlayer::CheckContinuity - wrapback :{}, prev:{:f}, curr:{:f}, diff:{:f}",
-              current.type, current.dts, pPacket->dts, pPacket->dts - current.dts);
   }
 
   double lastdts = pPacket->dts;
