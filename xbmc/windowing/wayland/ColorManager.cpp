@@ -24,7 +24,7 @@
 namespace
 {
 constexpr auto ffmpegToWaylandTFMap =
-    make_map<AVColorTransferCharacteristic, wayland::color_manager_v1_transfer_function>(
+    KODI::make_map<AVColorTransferCharacteristic, wayland::color_manager_v1_transfer_function>(
         // clang-format off
         {
           //{AVCOL_TRC_BT709,        ???},
@@ -52,7 +52,7 @@ constexpr auto ffmpegToWaylandTFMap =
     );
 
 constexpr auto ffmpegToWaylandPrimariesMap =
-    make_map<AVColorPrimaries, wayland::color_manager_v1_primaries>({
+    KODI::make_map<AVColorPrimaries, wayland::color_manager_v1_primaries>({
         // clang-format off
         //{AVCOL_PRI_RESERVED0,    unused},
           {AVCOL_PRI_BT709,        wayland::color_manager_v1_primaries::srgb},

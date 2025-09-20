@@ -25,7 +25,7 @@
 namespace
 {
 // clang-format off
-constexpr auto TextureMapping =  make_map<KD_TEX_FMT, TextureFormat>(
+constexpr auto TextureMapping =  KODI::make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8)
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
@@ -118,7 +118,7 @@ constexpr auto TextureMapping =  make_map<KD_TEX_FMT, TextureFormat>(
 #endif
 });
 
-constexpr auto SwizzleMap = make_map<KD_TEX_SWIZ, Textureswizzle>(
+constexpr auto SwizzleMap = KODI::make_map<KD_TEX_SWIZ, Textureswizzle>(
 {
   {KD_TEX_SWIZ_RGBA, {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}},
   {KD_TEX_SWIZ_RGB1, {GL_RED, GL_GREEN, GL_BLUE, GL_ONE}},

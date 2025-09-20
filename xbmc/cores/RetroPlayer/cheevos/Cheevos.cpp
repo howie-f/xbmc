@@ -44,7 +44,7 @@ constexpr auto CONSOLE_NAME = "ConsoleName";
 
 constexpr int RESPONSE_SIZE = 64;
 
-constexpr auto extensionToConsole = make_map<std::string_view, RConsoleID>({
+constexpr auto extensionToConsole = KODI::make_map<std::string_view, RConsoleID>({
     {".a26", RConsoleID::RC_CONSOLE_ATARI_2600},
     {".a78", RConsoleID::RC_CONSOLE_ATARI_7800},
     {".agb", RConsoleID::RC_CONSOLE_GAMEBOY_ADVANCE},

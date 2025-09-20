@@ -27,7 +27,7 @@ namespace
 using ActionName = std::string_view;
 using TouchCommandID = unsigned int;
 
-constexpr auto TouchCommands = make_map<ActionName, TouchCommandID>({
+constexpr auto TouchCommands = KODI::make_map<ActionName, TouchCommandID>({
     {"tap", ACTION_TOUCH_TAP},
     {"longpress", ACTION_TOUCH_LONGPRESS},
     {"pan", ACTION_GESTURE_PAN},

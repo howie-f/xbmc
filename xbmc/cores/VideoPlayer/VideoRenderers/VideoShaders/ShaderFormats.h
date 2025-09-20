@@ -42,7 +42,7 @@ struct fmt::formatter<EShaderFormat> : fmt::formatter<std::string_view>
   }
 
 private:
-  static constexpr auto shaderFormatMap = make_map<EShaderFormat, std::string_view>({
+  static constexpr auto shaderFormatMap = KODI::make_map<EShaderFormat, std::string_view>({
       {SHADER_NONE, "none"},
       {SHADER_YV12, "YV12"},
       {SHADER_YV12_9, "YV12 9bit"},

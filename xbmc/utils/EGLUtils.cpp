@@ -27,7 +27,7 @@ namespace
 {
 
 #define X(VAL) std::make_pair(VAL, #VAL)
-constexpr auto eglAttributes = make_map<EGLint, std::string_view>({
+constexpr auto eglAttributes = KODI::make_map<EGLint, std::string_view>({
     // please keep attributes in accordance to:
     // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetConfigAttrib.xhtml
     X(EGL_ALPHA_SIZE),
@@ -64,7 +64,7 @@ constexpr auto eglAttributes = make_map<EGLint, std::string_view>({
     X(EGL_TRANSPARENT_BLUE_VALUE),
 });
 
-constexpr auto eglErrors = make_map<EGLenum, std::string_view>({
+constexpr auto eglErrors = KODI::make_map<EGLenum, std::string_view>({
     // please keep errors in accordance to:
     // https://www.khronos.org/registry/EGL/sdk/docs/man/html/eglGetError.xhtml
     X(EGL_SUCCESS),
@@ -84,7 +84,7 @@ constexpr auto eglErrors = make_map<EGLenum, std::string_view>({
     X(EGL_CONTEXT_LOST),
 });
 
-constexpr auto eglErrorType = make_map<EGLint, std::string_view>({
+constexpr auto eglErrorType = KODI::make_map<EGLint, std::string_view>({
     X(EGL_DEBUG_MSG_CRITICAL_KHR),
     X(EGL_DEBUG_MSG_ERROR_KHR),
     X(EGL_DEBUG_MSG_WARN_KHR),
