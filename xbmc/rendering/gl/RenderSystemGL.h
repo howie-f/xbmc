@@ -47,7 +47,7 @@ struct fmt::formatter<ShaderMethodGL> : fmt::formatter<std::string_view>
   }
 
 private:
-  static constexpr auto ShaderMethodGLMap = make_map<ShaderMethodGL, std::string_view>({
+  static constexpr auto ShaderMethodGLMap = KODI::make_map<ShaderMethodGL, std::string_view>({
       {ShaderMethodGL::SM_DEFAULT, "default"},
       {ShaderMethodGL::SM_TEXTURE, "texture"},
       {ShaderMethodGL::SM_TEXTURE_LIM, "texture limited"},

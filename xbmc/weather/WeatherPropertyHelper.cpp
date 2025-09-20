@@ -79,7 +79,7 @@ struct PropertyDetails
 };
 
 // clang-format off
-constexpr auto propertyDetails = make_map<std::string_view, PropertyDetails>({
+constexpr auto propertyDetails = KODI::make_map<std::string_view, PropertyDetails>({
     {"Current.DewPoint",    {FormatTemperature, LocalizationType::NONE}},
     {"Current.FeelsLike",   {FormatTemperature, LocalizationType::NONE}},
     {"Current.Temperature", {FormatTemperature, LocalizationType::NONE}},
