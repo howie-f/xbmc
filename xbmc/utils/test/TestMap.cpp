@@ -15,7 +15,7 @@
 // CMap with sortable keys. Keys are sorted at compile time and find uses binary search
 TEST(TestMap, SortableKey)
 {
-  constexpr auto map = make_map<int, std::string_view>({{3, "three"}, {1, "one"}, {2, "two"}});
+  constexpr auto map = KODI::make_map<int, std::string_view>({{3, "three"}, {1, "one"}, {2, "two"}});
   EXPECT_EQ(map.find(1)->second, "one");
   EXPECT_EQ(map.find(2)->second, "two");
   EXPECT_EQ(map.find(3)->second, "three");
@@ -35,7 +35,7 @@ TEST(TestMap, NonSortableKey)
     bool operator==(const Dummy& other) const { return i == other.i; }
   };
 
-  constexpr auto map = make_map<Dummy, std::string_view>(
+  constexpr auto map = KODI::make_map<Dummy, std::string_view>(
       {{Dummy{3}, "three"}, {Dummy{1}, "one"}, {Dummy{2}, "two"}});
   EXPECT_EQ(map.find(Dummy{1})->second, "one");
   EXPECT_EQ(map.find(Dummy{2})->second, "two");
@@ -55,7 +55,7 @@ TEST(TestMap, EnumConstexpr)
     ENUM_MAX,
   };
 
-  constexpr auto map = make_map<ENUM, std::string_view>(
+  constexpr auto map = KODI::make_map<ENUM, std::string_view>(
       {{ENUM::ONE, "ONE"}, {ENUM::TWO, "TWO"}, {ENUM::THREE, "THREE"}});
   static_assert(map.find(ENUM::ONE)->second == "ONE");
   static_assert(map.find(ENUM::TWO)->second == "TWO");

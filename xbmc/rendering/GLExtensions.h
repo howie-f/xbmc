@@ -36,7 +36,7 @@ struct CGLExtensions
   };
   using enum Extension;
 
-  static constexpr auto stringMap = make_map<Extension, std::string_view>({
+  static constexpr auto stringMap = KODI::make_map<Extension, std::string_view>({
       {APPLE_texture_format_BGRA8888, "GL_APPLE_texture_format_BGRA8888"},
       {ARB_multitexture, "GL_ARB_multitexture"},
       {ARB_pixel_buffer_object, "GL_ARB_pixel_buffer_object"},

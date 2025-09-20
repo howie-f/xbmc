@@ -25,7 +25,7 @@ using namespace KODI::WINDOWING::WAYLAND;
 
 namespace
 {
-constexpr auto logLevelMap = make_map<xkb_log_level, int>({
+constexpr auto logLevelMap = KODI::make_map<xkb_log_level, int>({
     {XKB_LOG_LEVEL_CRITICAL, LOGERROR},
     {XKB_LOG_LEVEL_ERROR, LOGERROR},
     {XKB_LOG_LEVEL_WARNING, LOGWARNING},
@@ -62,7 +62,7 @@ static const std::vector<ModifierNameXBMCMapping> ModifierNameXBMCMappings = {
     {XKB_LED_NAME_NUM, XBMCKMOD_NUM},
     {XKB_LED_NAME_SCROLL, XBMCKMOD_MODE}};
 
-constexpr auto XkbKeycodeXBMCMappings = make_map<xkb_keycode_t, XBMCKey>({
+constexpr auto XkbKeycodeXBMCMappings = KODI::make_map<xkb_keycode_t, XBMCKey>({
     // Function keys before start of ASCII printable character range
     {XKB_KEY_BackSpace, XBMCK_BACKSPACE},
     {XKB_KEY_Tab, XBMCK_TAB},
@@ -218,7 +218,7 @@ constexpr auto XkbKeycodeXBMCMappings = make_map<xkb_keycode_t, XBMCKey>({
 #endif
 });
 
-constexpr auto XkbDeadKeyXBMCMapping = make_map<xkb_keycode_t, XBMCKey>({
+constexpr auto XkbDeadKeyXBMCMapping = KODI::make_map<xkb_keycode_t, XBMCKey>({
     {XKB_KEY_dead_grave, XBMCK_GRAVE},
     {XKB_KEY_dead_acute, XBMCK_ACUTE},
     {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},

@@ -33,7 +33,7 @@ namespace
 {
 #define X(VAL) std::make_pair(VAL, #VAL)
 //!@todo Remove ifdefs when sqlite version requirement has been bumped to at least 3.26.0
-constexpr auto sqliteErrorStrings = make_map<int, std::string_view>({
+constexpr auto sqliteErrorStrings = KODI::make_map<int, std::string_view>({
     X(SQLITE_OK),
     X(SQLITE_ERROR),
     X(SQLITE_INTERNAL),

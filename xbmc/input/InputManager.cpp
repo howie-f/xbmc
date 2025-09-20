@@ -56,7 +56,7 @@ const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enable
 
 namespace
 {
-constexpr auto keyComposeactionEventMap = make_map<uint8_t, int>({
+constexpr auto keyComposeactionEventMap = KODI::make_map<uint8_t, int>({
     {XBMC_KEYCOMPOSING_COMPOSING, ACTION_KEYBOARD_COMPOSING_KEY},
     {XBMC_KEYCOMPOSING_CANCELLED, ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED},
     {XBMC_KEYCOMPOSING_FINISHED, ACTION_KEYBOARD_COMPOSING_KEY_FINISHED},

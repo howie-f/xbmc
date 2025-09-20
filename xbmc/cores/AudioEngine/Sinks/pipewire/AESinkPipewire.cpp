@@ -50,7 +50,7 @@ constexpr std::array<uint32_t, 14> defaultSampleRates = {
   384000};
 // clang-format on
 
-constexpr auto formatMap = make_map<spa_audio_format, AEDataFormat>(
+constexpr auto formatMap = KODI::make_map<spa_audio_format, AEDataFormat>(
     {{SPA_AUDIO_FORMAT_ENCODED, AEDataFormat::AE_FMT_RAW},
      {SPA_AUDIO_FORMAT_U8, AEDataFormat::AE_FMT_U8},
      {SPA_AUDIO_FORMAT_S16, AEDataFormat::AE_FMT_S16NE},
@@ -122,7 +122,7 @@ constexpr AEDataFormat PWFormatToAEFormat(spa_audio_format& format)
 }
 
 // clang-format off
-constexpr auto channelMap = make_map<spa_audio_channel, AEChannel>({
+constexpr auto channelMap = KODI::make_map<spa_audio_channel, AEChannel>({
     {SPA_AUDIO_CHANNEL_FL, AEChannel::AE_CH_FL},
     {SPA_AUDIO_CHANNEL_FR, AEChannel::AE_CH_FR},
     {SPA_AUDIO_CHANNEL_FC, AEChannel::AE_CH_FC},
@@ -171,7 +171,7 @@ CAEChannelInfo PWChannelMapToAEChannelMap(std::vector<spa_audio_channel>& channe
   return channels;
 }
 
-constexpr auto iec958CodecMap = make_map<CAEStreamInfo::DataType, spa_audio_iec958_codec>({
+constexpr auto iec958CodecMap = KODI::make_map<CAEStreamInfo::DataType, spa_audio_iec958_codec>({
     {CAEStreamInfo::STREAM_TYPE_DTS_512, SPA_AUDIO_IEC958_CODEC_DTS},
     {CAEStreamInfo::STREAM_TYPE_DTS_1024, SPA_AUDIO_IEC958_CODEC_DTS},
     {CAEStreamInfo::STREAM_TYPE_DTS_2048, SPA_AUDIO_IEC958_CODEC_DTS},

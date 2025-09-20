@@ -58,7 +58,7 @@ namespace
 #endif
 
 #define X(VAL) std::make_pair(VAL, #VAL)
-  constexpr auto eglAttributes = make_map<EGLint, std::string_view>({
+  constexpr auto eglAttributes = KODI::make_map<EGLint, std::string_view>({
       X(EGL_WIDTH),
       X(EGL_HEIGHT),
 

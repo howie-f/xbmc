@@ -21,9 +21,9 @@
  *        doesn't look like it will be implemented in the future). This class
  *        utilizes std::array and std::pair as they allow constexpr.
  *
- *        When using this class you should use the helper make_map instead of
+ *        When using this class you should use the helper KODI::make_map instead of
  *        constructing this class directly. For example:
- *        constexpr auto myMap = make_map<int, std::string_view>({{1, "one"}});
+ *        constexpr auto myMap = KODI::make_map<int, std::string_view>({{1, "one"}});
  *
  *        This class is useful for mapping enum values to strings that can be
  *        compile time checked. This also helps with heap usage.
@@ -31,6 +31,8 @@
  *        Lookups have log(n) complexity if Key is comparable using std::less<>,
  *        otherwise it's linear.
  */
+
+namespace KODI {
 template<typename Key, typename Value, size_t Size>
 class CMap
 {
@@ -118,3 +120,4 @@ consteval auto make_map(std::pair<Key, Value> (&&m)[Size]) -> CMap<Key, Value, S
 {
   return CMap<Key, Value, Size>(std::begin(m), std::end(m));
 }
+} // namespace KODI

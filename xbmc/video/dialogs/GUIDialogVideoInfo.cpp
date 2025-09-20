@@ -921,7 +921,7 @@ bool CArtTypeChooser::ChooseArtType()
     const std::vector<std::string> availableArtTypes = GetArtTypesList(*m_item->GetVideoInfoTag());
 
     // maps art types to resource ids
-    static constexpr auto name2idMap = make_map<std::string_view, int>({
+    static constexpr auto name2idMap = KODI::make_map<std::string_view, int>({
         {"banner", 20020},
         {"fanart", 20445},
         {"poster", 20021},

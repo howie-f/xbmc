@@ -34,7 +34,7 @@ namespace
 constexpr unsigned int REPEAT_DELAY = 400;
 constexpr unsigned int REPEAT_RATE = 80;
 
-constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
+constexpr auto xkbMap = KODI::make_map<xkb_keysym_t, XBMCKey>({
     // Function keys before start of ASCII printable character range
     {XKB_KEY_BackSpace, XBMCK_BACKSPACE},
     {XKB_KEY_Tab, XBMCK_TAB},
@@ -150,14 +150,14 @@ constexpr auto xkbMap = make_map<xkb_keysym_t, XBMCKey>({
     // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
 });
 
-constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
+constexpr auto logLevelMap = KODI::make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
                                                            {XKB_LOG_LEVEL_ERROR, LOGERROR},
                                                            {XKB_LOG_LEVEL_WARNING, LOGWARNING},
                                                            {XKB_LOG_LEVEL_INFO, LOGINFO},
                                                            {XKB_LOG_LEVEL_DEBUG, LOGDEBUG}});
 
 constexpr auto XkbDeadKeyXBMCMapping =
-    make_map<xkb_keycode_t, XBMCKey>({{XKB_KEY_dead_grave, XBMCK_GRAVE},
+    KODI::make_map<xkb_keycode_t, XBMCKey>({{XKB_KEY_dead_grave, XBMCK_GRAVE},
                                       {XKB_KEY_dead_acute, XBMCK_ACUTE},
                                       {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},
                                       {XKB_KEY_dead_perispomeni, XBMCK_PERISPOMENI},
