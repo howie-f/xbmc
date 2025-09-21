@@ -54,7 +54,7 @@ struct fmt::formatter<EINTERLACEMETHOD> : fmt::formatter<std::string_view>
   }
 
 private:
-  static constexpr auto interlaceMethodMap = KODI::make_map<EINTERLACEMETHOD, std::string_view>({
+  static constexpr auto interlaceMethodMap = make_map<EINTERLACEMETHOD, std::string_view>({
       {VS_INTERLACEMETHOD_NONE, "none"},
       {VS_INTERLACEMETHOD_AUTO, "auto"},
       {VS_INTERLACEMETHOD_RENDER_BLEND, "render blend"},
@@ -114,7 +114,7 @@ public:
   }
 
 private:
-  static constexpr auto scalingMethodMap = KODI::make_map<ESCALINGMETHOD, std::string_view>({
+  static constexpr auto scalingMethodMap = make_map<ESCALINGMETHOD, std::string_view>({
       {VS_SCALINGMETHOD_NEAREST, "nearest neighbour"},
       {VS_SCALINGMETHOD_LINEAR, "linear"},
       {VS_SCALINGMETHOD_CUBIC_B_SPLINE, "cubic b spline"},
@@ -165,7 +165,7 @@ public:
   }
 
 private:
-  static constexpr auto tonemapMethodMap = KODI::make_map<ETONEMAPMETHOD, std::string_view>({
+  static constexpr auto tonemapMethodMap = make_map<ETONEMAPMETHOD, std::string_view>({
       {VS_TONEMAPMETHOD_OFF, "off"},
       {VS_TONEMAPMETHOD_REINHARD, "reinhard"},
       {VS_TONEMAPMETHOD_ACES, "aces"},

@@ -28,7 +28,7 @@ namespace
 // GLES 2.0 texture formats.
 // Any extension used here is in the core 3.0 profile (except BGRA)
 // format = (unsized) internalFormat (with core 2.0)
-constexpr auto TextureMappingGLES20 = KODI::make_map<KD_TEX_FMT, TextureFormat>(
+constexpr auto TextureMappingGLES20 = make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_rg)
   {KD_TEX_FMT_SDR_R8, {GL_RED_EXT}},
@@ -63,7 +63,7 @@ constexpr auto TextureMappingGLES20 = KODI::make_map<KD_TEX_FMT, TextureFormat>(
 
 // GLES 3.0 texture formats.
 #if defined(GL_ES_VERSION_3_0)
-constexpr auto TextureMappingGLES30 = KODI::make_map<KD_TEX_FMT, TextureFormat>(
+constexpr auto TextureMappingGLES30 = make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_sRGB_R8) && (GL_EXT_texture_sRGB_RG8) // in gl2ext.h, but spec says >= 3.0
   {KD_TEX_FMT_SDR_R8, {GL_R8, GL_SR8_EXT, GL_RED}},
@@ -96,7 +96,7 @@ constexpr auto TextureMappingGLES30 = KODI::make_map<KD_TEX_FMT, TextureFormat>(
 #endif // GL_ES_VERSION_3_0
 
 // Common GLES extensions (texture compression)
-constexpr auto TextureMappingGLESExtensions = KODI::make_map<KD_TEX_FMT, TextureFormat>(
+constexpr auto TextureMappingGLESExtensions = make_map<KD_TEX_FMT, TextureFormat>(
 {
 #if defined(GL_EXT_texture_compression_s3tc) && (GL_EXT_texture_compression_s3tc_srgb)
   {KD_TEX_FMT_S3TC_RGB8, {GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_COMPRESSED_SRGB_S3TC_DXT1_EXT}},
@@ -156,7 +156,7 @@ constexpr auto TextureMappingGLESExtensions = KODI::make_map<KD_TEX_FMT, Texture
 #endif
 });
 
-constexpr auto SwizzleMapGLES = KODI::make_map<KD_TEX_SWIZ, TextureSwizzle>(
+constexpr auto SwizzleMapGLES = make_map<KD_TEX_SWIZ, TextureSwizzle>(
 {
   {KD_TEX_SWIZ_RGBA, {GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA}},
   {KD_TEX_SWIZ_RGB1, {GL_RED, GL_GREEN, GL_BLUE, GL_ONE}},

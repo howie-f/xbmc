@@ -27,7 +27,7 @@ namespace
 
 // clang-format off
 #define X(VAL) std::make_pair(VAL, #VAL)
-constexpr auto glErrors = KODI::make_map<GLenum, std::string_view>({
+constexpr auto glErrors = make_map<GLenum, std::string_view>({
   // please keep attributes in accordance to:
   // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetError.xhtml
   X(GL_NO_ERROR),
@@ -43,7 +43,7 @@ constexpr auto glErrors = KODI::make_map<GLenum, std::string_view>({
 });
 
 #ifdef TARGET_LINUX
-constexpr auto glErrorSource = KODI::make_map<GLenum, std::string_view>({
+constexpr auto glErrorSource = make_map<GLenum, std::string_view>({
 #ifdef HAS_GLES
     X(GL_DEBUG_SOURCE_API_KHR),
     X(GL_DEBUG_SOURCE_WINDOW_SYSTEM_KHR),
@@ -62,7 +62,7 @@ constexpr auto glErrorSource = KODI::make_map<GLenum, std::string_view>({
 #endif
 });
 
-constexpr auto glErrorType = KODI::make_map<GLenum, std::string_view>({
+constexpr auto glErrorType = make_map<GLenum, std::string_view>({
 #ifdef HAS_GLES
     X(GL_DEBUG_TYPE_ERROR_KHR),
     X(GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_KHR),
@@ -83,7 +83,7 @@ constexpr auto glErrorType = KODI::make_map<GLenum, std::string_view>({
 #endif
 });
 
-constexpr auto glErrorSeverity = KODI::make_map<GLenum, std::string_view>({
+constexpr auto glErrorSeverity = make_map<GLenum, std::string_view>({
 #ifdef HAS_GLES
     X(GL_DEBUG_SEVERITY_HIGH_KHR),
     X(GL_DEBUG_SEVERITY_MEDIUM_KHR),

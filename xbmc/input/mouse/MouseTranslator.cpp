@@ -28,7 +28,7 @@ namespace
 using ActionName = std::string_view;
 using KeyID = uint32_t;
 
-constexpr auto MouseKeys = KODI::make_map<ActionName, KeyID>({
+constexpr auto MouseKeys = make_map<ActionName, KeyID>({
     {"click", KEY_MOUSE_CLICK},
     {"leftclick", KEY_MOUSE_CLICK},
     {"rightclick", KEY_MOUSE_RIGHTCLICK},

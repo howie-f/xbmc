@@ -70,7 +70,7 @@ namespace
 // These map to the definitions in the linux kernel
 // drivers/gpu/drm/drm_connector.c
 
-constexpr auto ColorimetryMap = KODI::make_map<KODI::UTILS::Colorimetry, std::string_view>({
+constexpr auto ColorimetryMap = make_map<KODI::UTILS::Colorimetry, std::string_view>({
     {KODI::UTILS::Colorimetry::DEFAULT, "Default"},
     {KODI::UTILS::Colorimetry::XVYCC_601, "XVYCC_601"},
     {KODI::UTILS::Colorimetry::XVYCC_709, "XVYCC_709"},

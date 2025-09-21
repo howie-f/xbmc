@@ -28,7 +28,7 @@
 
 namespace
 {
-constexpr auto activeSettings = KODI::make_map<ADDON::AddonType, const char*>({
+constexpr auto activeSettings = make_map<ADDON::AddonType, const char*>({
     {ADDON::AddonType::AUDIOENCODER, CSettings::SETTING_AUDIOCDS_ENCODER},
     {ADDON::AddonType::RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
     {ADDON::AddonType::RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},

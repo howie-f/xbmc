@@ -24,7 +24,7 @@ namespace
 using ActionName = std::string_view;
 using ActionID = unsigned int;
 
-constexpr auto ActionMappings = KODI::make_map<ActionName, ActionID>({
+constexpr auto ActionMappings = make_map<ActionName, ActionID>({
     {"left", ACTION_MOVE_LEFT},
     {"right", ACTION_MOVE_RIGHT},
     {"up", ACTION_MOVE_UP},

@@ -17,7 +17,7 @@ using namespace KEYBOARD;
 
 namespace
 {
-constexpr auto KeyboardSymbols = KODI::make_map<std::string_view, XBMCKey>({
+constexpr auto KeyboardSymbols = make_map<std::string_view, XBMCKey>({
     {KEY_SYMBOL_BACKSPACE, XBMCK_BACKSPACE},
     {KEY_SYMBOL_TAB, XBMCK_TAB},
     {KEY_SYMBOL_CLEAR, XBMCK_CLEAR},

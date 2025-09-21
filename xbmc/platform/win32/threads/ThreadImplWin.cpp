@@ -22,7 +22,7 @@
 namespace
 {
 
-constexpr auto nativeThreadPriorityMap = KODI::make_map<ThreadPriority, int>({
+constexpr auto nativeThreadPriorityMap = make_map<ThreadPriority, int>({
     {ThreadPriority::LOWEST, THREAD_PRIORITY_IDLE},
     {ThreadPriority::BELOW_NORMAL, THREAD_PRIORITY_BELOW_NORMAL},
     {ThreadPriority::NORMAL, THREAD_PRIORITY_NORMAL},
