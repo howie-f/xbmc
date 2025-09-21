@@ -25,7 +25,7 @@ using ActionName = std::string_view;
 using CommandID = uint32_t;
 
 #ifdef TARGET_WINDOWS
-constexpr auto AppCommands = KODI::make_map<ActionName, CommandID>({
+constexpr auto AppCommands = make_map<ActionName, CommandID>({
     {"browser_back", APPCOMMAND_BROWSER_BACKWARD},
     {"browser_forward", APPCOMMAND_BROWSER_FORWARD},
     {"browser_refresh", APPCOMMAND_BROWSER_REFRESH},

@@ -28,7 +28,7 @@
 using namespace KODI::GUILIB::GUIINFO;
 using namespace KODI;
 
-constexpr auto listitem2slideshow_map = KODI::make_map<int, int>({
+constexpr auto listitem2slideshow_map = make_map<int, int>({
     // clang-format off
   { LISTITEM_PICTURE_RESOLUTION       , SLIDESHOW_RESOLUTION },
   { LISTITEM_PICTURE_LONGDATE         , SLIDESHOW_EXIF_LONG_DATE },

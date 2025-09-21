@@ -42,7 +42,7 @@ struct ComponentInfo
 };
 
 // clang-format off
-constexpr auto componentMap = KODI::make_map<int, ComponentInfo>({
+constexpr auto componentMap = make_map<int, ComponentInfo>({
   // component id,  component name, component setting value string id
   {LOGSAMBA,        {"samba",       669}},
   {LOGCURL,         {"curl",        670}},

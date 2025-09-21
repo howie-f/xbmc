@@ -55,7 +55,7 @@ struct fmt::formatter<ShaderMethodGLES> : fmt::formatter<std::string_view>
   }
 
 private:
-  static constexpr auto ShaderMethodGLESMap = KODI::make_map<ShaderMethodGLES, std::string_view>({
+  static constexpr auto ShaderMethodGLESMap = make_map<ShaderMethodGLES, std::string_view>({
       {ShaderMethodGLES::SM_DEFAULT, "default"},
       {ShaderMethodGLES::SM_TEXTURE, "texture"},
       {ShaderMethodGLES::SM_TEXTURE_111R, "alpha texture with diffuse color"},
