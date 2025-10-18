@@ -172,7 +172,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
       {
         CLog::Log(LOGERROR, "CPythonInvoker({}, {}): FAILED to get thread m_threadState!", GetId(),
                   m_sourceFile);
-        PyThreadState_Swap(m_mainThreadState);
+        PyEval_RestoreThread(m_mainThreadState);
         PyThreadState_Clear(m_mainThreadState);
         PyThreadState_DeleteCurrent();
         m_mainThreadState = nullptr;
