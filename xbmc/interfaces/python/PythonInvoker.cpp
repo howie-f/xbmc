@@ -165,7 +165,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
         return false;
       }
 
-      PyThreadState_Swap(m_mainThreadState);
+      PyEval_RestoreThread(m_mainThreadState);
       l_threadState = Py_NewInterpreter();
       PyEval_ReleaseThread(l_threadState);
       if (l_threadState == NULL)
